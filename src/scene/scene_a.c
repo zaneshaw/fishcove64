@@ -5,8 +5,18 @@
 
 scene_t scene_a = (scene_t) {
 	.name = "scene a",
+
+	.clear_color = (color_t) { 0xFF, 0xFF, 0xFF, 0xFF },
+	.ambient_color = (uint8_t[]) { 200, 200, 200, 0xFF },
+
+	.fog_enabled = true,
+	.fog_color = (color_t) { 0xFF, 0xFF, 0xFF, 0xFF },
+	.fog_near = 50.0f,
+	.fog_far = 500.0f,
+
 	.load = &scene_a_load,
 	.update = &scene_a_update,
+	.render = NULL,
 };
 
 actor_t* the_cube;

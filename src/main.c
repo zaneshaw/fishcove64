@@ -40,16 +40,7 @@ int main() {
 
 		rdpq_set_prim_color(RGBA16(0xFF, 0xFF, 0xFF, 0xFF));
 
-		rdpq_mode_fog(RDPQ_FOG_STANDARD);
-		rdpq_set_fog_color(RGBA16(0x00, 0x00, 0x00, 0xFF));
-
-		t3d_screen_clear_color(RGBA16(0x00, 0x00, 0x00, 0xFF));
 		t3d_screen_clear_depth();
-
-		t3d_light_set_ambient((uint8_t[]) { 0xFF, 0xFF, 0xFF, 0xFF });
-
-		t3d_fog_set_range(50.0f, 500.0f);
-		t3d_fog_set_enabled(true);
 
 		scene_update(delta_time, elapsed);
 		scene_render();

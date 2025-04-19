@@ -9,6 +9,16 @@ typedef struct scene_s {
 
 	void(*load)(scene_t* this);
 	void(*update)(scene_t* this, float delta_time, float elapsed);
+	void(*render)(scene_t* this);
+
+	color_t clear_color;
+	const uint8_t *ambient_color;
+
+
+	bool fog_enabled;
+	color_t fog_color;
+	int fog_near;
+	int fog_far;
 
 	actor_t** _actors;
 	int _actor_count;
