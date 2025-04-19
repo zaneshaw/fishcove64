@@ -23,7 +23,7 @@ AllowShortIfStatementsOnASingleLine: Always
 FixNamespaceComments: false
 ReflowComments: false
 NamespaceIndentation: All
-IncludeBlocks: Merge
+IncludeBlocks: Preserve
 BreakStringLiterals: false
 BreakConstructorInitializers: AfterColon
 IndentPPDirectives: BeforeHash

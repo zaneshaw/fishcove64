@@ -36,11 +36,11 @@ filesystem/fonts/%.font64: $(ASSETS_DIR)/fonts/%.ttf
 	@echo "    [FONT] $@"
 	$(N64_MKFONT) $(MKFONT_FLAGS) -o $(dir $@) "$<"
 
-filesystem/models/%.t3dm: $(ASSETS_DIR)/models/%.glb
+
+filesystem/models/%.t3dm: assets/models/%.glb
 	@mkdir -p $(dir $@)
 	@echo "    [MODEL] $@"
-	$(T3D_GLTF_TO_3D) "$<" $(dir $@) --base-scale=256
-	$(N64_BINDIR)/mkasset -c 2 -o filesystem $(dir $@)
+	$(T3D_GLTF_TO_3D) "$<" $@ --base-scale=256
 
 all: $(PROJECT_NAME).z64
 
