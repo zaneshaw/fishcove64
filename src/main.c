@@ -1,6 +1,6 @@
 #include "actor/actor.h"
 #include "scene/scene.h"
-#include "scene/scene_a.h"
+#include "scene/scene_playground.h"
 #include <debug.h>
 #include <t3d/t3dmodel.h>
 
@@ -22,7 +22,7 @@ int main() {
 
 	setup();
 
-	scene_load(&scene_a);
+	scene_load(&scene_playground);
 
 	T3DViewport viewport = t3d_viewport_create();
 
@@ -30,8 +30,13 @@ int main() {
 		delta_time = display_get_delta_time();
 		elapsed += delta_time;
 
-		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(70.0f), 35.0f, 3000.0f);
-		t3d_viewport_look_at(&viewport, &(fm_vec3_t) { { 0, 0, -500 } }, &(fm_vec3_t) { { 0, 0, 0 } }, &(fm_vec3_t) { { 0, 1, 0 } });
+		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(70.0f), 35.0f, 1000.0f);
+		t3d_viewport_look_at(
+			&viewport,
+			&(fm_vec3_t) { { 0, 180, -500 } },
+			&(fm_vec3_t) { { 0, 180, 0 } },
+			&(fm_vec3_t) { { 0, 1, 0 } }
+		);
 
 		rdpq_attach(display_get(), display_get_zbuf());
 
