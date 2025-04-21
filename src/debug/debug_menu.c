@@ -1,6 +1,7 @@
 #include "debug_menu.h"
 
-#include "../util/constants.h"
+#include "../util/macros.h"
+#include "../player/player.h"
 
 #include <display.h>
 #include <n64sys.h>
@@ -30,6 +31,10 @@ void debug_menu_render(float delta_time, float elapsed) {
 	rdpq_text_printf(&debug_text_params, FONT_BUILTIN_DEBUG_MONO, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 10, " time: %.2f s", elapsed);
 	rdpq_text_printf(&debug_text_params, FONT_BUILTIN_DEBUG_MONO, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 20, "delta: %.9f s", delta_time);
 	rdpq_text_printf(&debug_text_params, FONT_BUILTIN_DEBUG_MONO, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 30, "  mem: %d / %d B", stats.used, stats.total);
+	rdpq_text_printf(&debug_text_params, FONT_BUILTIN_DEBUG_MONO, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 40, " xpos: %f", player.transform.position.x);
+	rdpq_text_printf(&debug_text_params, FONT_BUILTIN_DEBUG_MONO, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 50, " zpos: %f", player.transform.position.z);
+	rdpq_text_printf(&debug_text_params, FONT_BUILTIN_DEBUG_MONO, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 60, "  yaw: %f", player.camera_transform.rotation.y);
+	rdpq_text_printf(&debug_text_params, FONT_BUILTIN_DEBUG_MONO, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 70, "pitch: %f", player.camera_transform.rotation.x);
 }
 
 void debug_menu_toggle() {

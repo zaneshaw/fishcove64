@@ -1,7 +1,9 @@
 #include "actor/actor.h"
 #include "debug/debug_menu.h"
+#include "player/player.h"
 #include "scene/scene.h"
 #include "scene/scene_playground.h"
+#include "util/macros.h"
 
 #include <debug.h>
 #include <joypad.h>
@@ -23,7 +25,7 @@ void setup() {
 }
 
 int main() {
-	display_init(RESOLUTION_320x240, DEPTH_32_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+	display_init(RESOLUTION_320x240, DEPTH_32_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
 	rdpq_init();
 	t3d_init((T3DInitParams) {});
 	dfs_init(DFS_DEFAULT_LOCATION);
@@ -37,11 +39,28 @@ int main() {
 		delta_time = display_get_delta_time();
 		elapsed += delta_time;
 
+		scene_update(delta_time, elapsed);
+
+		joypad_poll();
+
+		player_look(delta_time);
+		player_move(delta_time);
+
+		// todo: move to eye/camera struct
+		transform_t eye = player_get_eye();
+		fm_vec3_t eye_forward = { {
+			fm_cosf(eye.rotation.x) * fm_sinf(eye.rotation.y),
+			-fm_sinf(eye.rotation.x),
+			fm_cosf(eye.rotation.x) * fm_cosf(eye.rotation.y),
+		} };
+		fm_vec3_t eye_target;
+		fm_vec3_add(&eye_target, &eye.position, &eye_forward);
+
 		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(70.0f), 35.0f, 1000.0f);
 		t3d_viewport_look_at(
 			&viewport,
-			&(fm_vec3_t) { { 0, 180, -500 } },
-			&(fm_vec3_t) { { 0, 180, 0 } },
+			&eye.position,
+			&eye_target,
 			&(fm_vec3_t) { { 0, 1, 0 } }
 		);
 
@@ -54,16 +73,12 @@ int main() {
 
 		t3d_screen_clear_depth();
 
-		joypad_poll();
-
-		// todo: move to controls.c
-		if (joypad_is_connected(JOYPAD_PORT_1) && joypad_get_identifier(JOYPAD_PORT_1) == JOYBUS_IDENTIFIER_N64_CONTROLLER) {
-			if (joypad_get_buttons_pressed(JOYPAD_PORT_1).c_up) {
+		if (JOYPAD_IS_READY) {
+			if (joypad_get_buttons_pressed(JOYPAD).l) {
 				debug_menu_toggle();
 			}
 		}
 
-		scene_update(delta_time, elapsed);
 		scene_render();
 
 		debug_menu_render(delta_time, elapsed);
