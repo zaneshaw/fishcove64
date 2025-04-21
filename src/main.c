@@ -1,7 +1,10 @@
 #include "actor/actor.h"
+#include "debug/debug_menu.h"
 #include "scene/scene.h"
 #include "scene/scene_playground.h"
+
 #include <debug.h>
+#include <joypad.h>
 #include <t3d/t3dmodel.h>
 
 float delta_time;
@@ -11,6 +14,12 @@ void setup() {
 	debug_init_isviewer();
 
 	// rdpq_config_enable(RDPQ_CFG_AUTOSYNCPIPE);
+
+	// todo: move to font.c
+	rdpq_font_t* font = rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_MONO);
+	rdpq_text_register_font(1, font);
+
+	scene_load(&scene_playground);
 }
 
 int main() {
@@ -21,8 +30,6 @@ int main() {
 	joypad_init();
 
 	setup();
-
-	scene_load(&scene_playground);
 
 	T3DViewport viewport = t3d_viewport_create();
 
@@ -47,8 +54,19 @@ int main() {
 
 		t3d_screen_clear_depth();
 
+		joypad_poll();
+
+		// todo: move to controls.c
+		if (joypad_is_connected(JOYPAD_PORT_1) && joypad_get_identifier(JOYPAD_PORT_1) == JOYBUS_IDENTIFIER_N64_CONTROLLER) {
+			if (joypad_get_buttons_pressed(JOYPAD_PORT_1).c_up) {
+				debug_menu_toggle();
+			}
+		}
+
 		scene_update(delta_time, elapsed);
 		scene_render();
+
+		debug_menu_render(delta_time, elapsed);
 
 		rdpq_detach_show();
 	}

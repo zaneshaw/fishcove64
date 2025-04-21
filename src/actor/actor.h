@@ -2,8 +2,9 @@
 #define ACTOR_H_
 
 #include "../math/transform.h"
-#include "t3d/t3dmodel.h"
-#include "rspq.h"
+
+#include <t3d/t3dmodel.h>
+#include <rspq.h>
 
 typedef struct actor_s {
 	transform_t transform;

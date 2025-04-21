@@ -1,7 +1,8 @@
 #include "scene_playground.h"
 
 #include "scene.h"
-#include "t3d/t3dmodel.h"
+
+#include <t3d/t3dmodel.h>
 
 scene_t scene_playground = (scene_t) {
 	.name = "Playground",
@@ -50,7 +51,7 @@ void scene_playground_load(scene_t* this) {
 }
 
 void scene_playground_update(scene_t* this, float delta_time, float elapsed) {
-	coolest_totem->transform.position.x = fm_cosf(elapsed * M_TWOPI * 0.3f) * 100.0f;
+	// coolest_totem->transform.position.x = fm_cosf(elapsed * M_TWOPI * 0.3f) * 100.0f;
 	coolest_totem->transform.position.y = fm_sinf(elapsed * M_TWOPI * 0.3f) * 100.0f + 180.0f;
 
 	coolest_totem->transform.rotation.y = elapsed * M_PI_2;
