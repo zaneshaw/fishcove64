@@ -27,9 +27,9 @@ void scene_playground_load(scene_t* this) {
 	scene_model = malloc(sizeof(actor_t));
 	*scene_model = (actor_t) {
 		.transform = {
-			.position = { { 0, 0, 0 } },
-			.rotation = { { 0, 0, 0 } },
-			.scale = { { 1, 1, 1 } },
+			.position = { 0, 0, 0 },
+			.rotation = { 0, 0, 0 },
+			.scale = { 1, 1, 1 },
 		},
 		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
 		.model = t3d_model_load("rom://models/scene_playground.t3dm"),
@@ -38,9 +38,9 @@ void scene_playground_load(scene_t* this) {
 	coolest_totem = malloc(sizeof(actor_t));
 	*coolest_totem = (actor_t) {
 		.transform = {
-			.position = { { 0, 0, 0 } },
-			.rotation = { { 0, 0, 0 } },
-			.scale = { { 1, 1, 1 } },
+			.position = { 0, 0, 0 },
+			.rotation = { 0, 0, 0 },
+			.scale = { 1, 1, 1 },
 		},
 		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
 		.model = t3d_model_load("rom://models/coolest_totem.t3dm"),

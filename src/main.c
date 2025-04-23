@@ -1,5 +1,6 @@
 #include "actor/actor.h"
 #include "debug/debug_menu.h"
+#include "math/vector3.h"
 #include "player/player.h"
 #include "scene/scene.h"
 #include "scene/scene_playground.h"
@@ -48,20 +49,20 @@ int main() {
 
 		// todo: move to eye/camera struct
 		transform_t eye = player_get_eye();
-		fm_vec3_t eye_forward = { {
+		vector3_t eye_forward = {
 			fm_cosf(eye.rotation.x) * fm_sinf(eye.rotation.y),
 			-fm_sinf(eye.rotation.x),
 			fm_cosf(eye.rotation.x) * fm_cosf(eye.rotation.y),
-		} };
-		fm_vec3_t eye_target;
-		fm_vec3_add(&eye_target, &eye.position, &eye_forward);
+		};
+		vector3_t eye_target;
+		vector3_add(&eye_target, &eye.position, &eye_forward);
 
 		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(70.0f), 35.0f, 1000.0f);
 		t3d_viewport_look_at(
 			&viewport,
-			&eye.position,
-			&eye_target,
-			&(fm_vec3_t) { { 0, 1, 0 } }
+			&vector3_to_fgeom(eye.position),
+			&vector3_to_fgeom(eye_target),
+			&vector3_to_fgeom(vector3_up)
 		);
 
 		rdpq_attach(display_get(), display_get_zbuf());

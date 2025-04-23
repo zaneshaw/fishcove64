@@ -20,14 +20,14 @@ float pitch_modes[] = { PITCH_LOWEST, PITCH_LOW, PITCH_MID, PITCH_HIGH, PITCH_HI
 
 player_t player = (player_t) {
 	.transform = (transform_t) {
-		.position = { { 0, 0, 0 } },
-		.rotation = { { 0, 0, 0 } },
-		.scale = { { 1, 1, 1 } },
+		.position = { 0, 0, 0 },
+		.rotation = { 0, 0, 0 },
+		.scale = { 1, 1, 1 },
 	},
 	.camera_transform = (transform_t) {
-		.position = { { 0, 180, 0 } },
-		.rotation = { { 0, 0, 0 } },
-		.scale = { { 1, 1, 1 } },
+		.position = { 0, 180, 0 },
+		.rotation = { 0, 0, 0 },
+		.scale = { 1, 1, 1 },
 	},
 	.look_speed = 10,
 	.move_speed = 10,
@@ -73,15 +73,15 @@ void player_move(float delta_time) {
 
 transform_t player_get_eye() {
 	return (transform_t) {
-		.position = { {
+		.position = {
 			player.transform.position.x + player.camera_transform.position.x,
 			player.transform.position.y + player.camera_transform.position.y,
 			player.transform.position.z + player.camera_transform.position.z,
-		} },
-		.rotation = { {
+		},
+		.rotation = {
 			player.transform.rotation.x + player.camera_transform.rotation.x,
 			player.transform.rotation.y + player.camera_transform.rotation.y,
 			player.transform.rotation.z + player.camera_transform.rotation.z,
-		} },
+		},
 	};
 }

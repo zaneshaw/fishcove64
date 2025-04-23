@@ -18,16 +18,14 @@ void scene_update(float delta_time, float elapsed) {
 
 	for (int i = 0; i < current_scene->_actor_count; i++) {
 		actor_t* actor = current_scene->_actors[i];
+		vector3_t scale;
+		vector3_scale(&scale, &actor->transform.scale, 100.0f / 256.0f);
 
 		t3d_mat4fp_from_srt_euler(
 			actor->transform_matrix,
-			(fm_vec3_t) { {
-				actor->transform.scale.x * (100.0f / 256.0f),
-				actor->transform.scale.y * (100.0f / 256.0f),
-				actor->transform.scale.z * (100.0f / 256.0f),
-			} }.v,
-			actor->transform.rotation.v,
-			actor->transform.position.v
+			vector3_to_fgeom(scale).v,
+			vector3_to_fgeom(actor->transform.rotation).v,
+			vector3_to_fgeom(actor->transform.position).v
 		);
 	}
 }
