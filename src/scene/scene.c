@@ -61,6 +61,7 @@ void scene_render() {
 	}
 }
 
+// todo: collisions aren't freed properly
 void scene_kill(scene_t* scene) {
 	for (int i = 0; i < current_scene->_actor_count; i++) {
 		actor_kill(current_scene->_actors[i]);

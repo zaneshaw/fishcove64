@@ -27,6 +27,7 @@ void setup() {
 	// rdpq_config_enable(RDPQ_CFG_AUTOSYNCPIPE);
 
 	font_init();
+	debug_menu_init();
 	collision_init();
 
 	scene_load(&scene_playground);
@@ -44,6 +45,12 @@ int main() {
 	T3DViewport viewport = t3d_viewport_create();
 
 	for (uint64_t frame = 0;; frame++) {
+		if ((int) elapsed / 4 > 0) {
+			elapsed = 0;
+			scene_load(&scene_playground);
+			continue;
+		}
+
 		delta_time = display_get_delta_time();
 		elapsed += delta_time;
 

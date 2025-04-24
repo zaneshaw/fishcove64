@@ -60,6 +60,7 @@ void player_update_capsule() {
 	player.capsule.radius = player.radius;
 }
 
+// todo: move to collision.c
 void player_collide_world() {
 	player_update_capsule();
 

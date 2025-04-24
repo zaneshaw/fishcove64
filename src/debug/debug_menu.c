@@ -9,60 +9,62 @@
 #include <rdpq.h>
 #include <rdpq_font.h>
 #include <rdpq_text.h>
-#include <stdbool.h>
+#include <stdarg.h>
+
+#define DEBUG_MENU_LINE_HEIGHT 10
+#define DEBUG_MENU_VALUE_OFFSET 35
 
 bool state = true;
-
+int cursor = 0;
 heap_stats_t stats;
 
-void debug_menu_render(float delta_time, float elapsed) {
-	if (!state) return;
+rdpq_textparms_t label_params;
+rdpq_textparms_t value_params;
 
-	rdpq_textparms_t name_params = {
+void debug_menu_init() {
+	label_params = (rdpq_textparms_t) {
 		.width = 30,
 		.height = (short) display_get_height(),
 		.align = ALIGN_RIGHT,
 		.valign = VALIGN_TOP,
 	};
 
-	rdpq_textparms_t value_params = {
+	value_params = (rdpq_textparms_t) {
 		.width = (short) display_get_width(),
 		.height = (short) display_get_height(),
 		.align = ALIGN_LEFT,
 		.valign = VALIGN_TOP,
 	};
+}
+
+void debug_menu_draw_entry(const char* label, const char* format, ...) {
+	va_list va;
+	va_start(va, format);
+
+	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + cursor * DEBUG_MENU_LINE_HEIGHT, "%s:", label);
+	rdpq_text_vprintf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + DEBUG_MENU_VALUE_OFFSET, OVERSCAN_PAD_Y + cursor * DEBUG_MENU_LINE_HEIGHT, format, va);
+
+	cursor++;
+}
+
+void debug_menu_render(float delta_time, float elapsed) {
+	if (!state) return;
+
+	cursor = 0;
 
 	sys_get_heap_stats(&stats);
 
 	rdpq_sync_pipe();
 
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 0, "fps:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 0, "%.1f", display_get_fps());
-
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 10, "time:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 10, "%.2f s", elapsed);
-
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 20, "delta:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 20, "%.9f s", delta_time);
-
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 30, "mem:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 30, "%d / %d B", stats.used, stats.total);
-
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 40, "xpos:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 40, "%.2f", player.transform.position.x);
-
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 50, "ypos:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 50, "%.2f", player.transform.position.y);
-
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 60, "zpos:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 60, "%.2f", player.transform.position.z);
-
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 70, "yaw:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 70, "%f", player.camera_transform.rotation.y);
-
-	rdpq_text_printf(&name_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + 80, "pitch:");
-	rdpq_text_printf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + 35, OVERSCAN_PAD_Y + 80, "%f", player.camera_transform.rotation.x);
-
+	debug_menu_draw_entry("fps", "%.1f", display_get_fps());
+	debug_menu_draw_entry("time", "%.2f s", elapsed);
+	debug_menu_draw_entry("delta", "%.9f s", delta_time);
+	debug_menu_draw_entry("mem", "%d / %d B", stats.used, stats.total);
+	debug_menu_draw_entry("xpos", "%.2f", player.transform.position.x);
+	debug_menu_draw_entry("ypos", "%.2f", player.transform.position.y);
+	debug_menu_draw_entry("zpos", "%.2f", player.transform.position.z);
+	debug_menu_draw_entry("yaw", "%f", player.camera_transform.rotation.y);
+	debug_menu_draw_entry("pitch", "%f", player.camera_transform.rotation.x);
 }
 
 void debug_menu_toggle() {

@@ -19,6 +19,6 @@ void actor_draw(actor_t* actor) {
 void actor_kill(actor_t* actor) {
 	t3d_model_free(actor->model);
 	free_uncached(actor->transform_matrix);
-	free(actor->block);
+	rspq_block_free(actor->block);
 	free(actor);
 }

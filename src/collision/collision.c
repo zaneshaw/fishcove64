@@ -26,5 +26,6 @@ void collision_add(box_t* box) {
 
 void collision_free() {
 	free(collision_boxes);
+
 	collision_count = 0;
 }
