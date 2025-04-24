@@ -2,6 +2,7 @@
 #define SCENE_H_
 
 #include "../actor/actor.h"
+#include "../collision/shapes/box.h"
 
 typedef struct scene_s scene_t;
 typedef struct scene_s {
@@ -22,6 +23,8 @@ typedef struct scene_s {
 	actor_t** _actors;
 	int _actor_count;
 	int _actor_capacity;
+
+	box_t boxes[64];
 } scene_t;
 
 void scene_load(scene_t* scene);

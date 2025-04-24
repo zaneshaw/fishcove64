@@ -1,4 +1,5 @@
 # https://github.com/SpookyIluha/DDLC64-LibdragonVNE/blob/engine-game-example/Makefile
+# https://github.com/alexvnesta/n64_bullet_demo/blob/main/Makefile
 
 BUILD_DIR = build
 SOURCE_DIR = src
@@ -8,6 +9,10 @@ PROJECT_NAME = fishcove64
 
 include $(N64_INST)/include/n64.mk
 include $(N64_INST)/include/t3d.mk
+
+INCLUDE += -I$(N64_INST)/include -Iinclude -Isrc # needed?
+CFLAGS += -I$(N64_INST)/include -I$(N64_INST)/include/ccd -std=gnu17
+LDFLAGS += -g -L$(N64_INST)/lib -l:libccd.a
 
 SOURCES = $(shell find $(SOURCE_DIR) -type f -name '*.c')
 
@@ -42,7 +47,6 @@ filesystem/fonts/%.font64: $(ASSETS_DIR)/fonts/%.ttf
 	@mkdir -p $(dir $@)
 	@echo "    [FONT] $@"
 	$(N64_MKFONT) $(MKFONT_FLAGS) -o $(dir $@) "$<"
-
 
 filesystem/models/%.t3dm: assets/models/%.glb
 	@mkdir -p $(dir $@)

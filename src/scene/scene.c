@@ -1,5 +1,7 @@
 #include "scene.h"
 
+#include "../collision/collision.h"
+
 #include <stddef.h>
 
 scene_t* current_scene = NULL;
@@ -7,6 +9,13 @@ scene_t* current_scene = NULL;
 void scene_load(scene_t* scene) {
 	if (current_scene != NULL) {
 		scene_kill(scene);
+	}
+
+	// ugh - full rewrite
+	size_t size = sizeof(scene->boxes) / sizeof(*scene->boxes);
+	collision_allocate(size);
+	for (size_t i = 0; i < sizeof(scene->boxes) / sizeof(*scene->boxes); i++) {
+		collision_add(&scene->boxes[i]);
 	}
 
 	current_scene = scene;
@@ -60,6 +69,8 @@ void scene_kill(scene_t* scene) {
 	scene->_actor_count = 0;
 	scene->_actor_capacity = 0;
 	free(scene->_actors);
+
+	collision_free();
 }
 
 void scene_add_actor(scene_t* scene, actor_t* actor) {

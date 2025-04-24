@@ -1,5 +1,9 @@
 #include "player.h"
 
+#include "../collision/collision.h"
+#include "../collision/shapes/box.h"
+#include "../collision/shapes/capsule.h"
+#include "../math/lerp.h"
 #include "../util/macros.h"
 
 #include <debug.h>
@@ -20,7 +24,7 @@ float pitch_modes[] = { PITCH_LOWEST, PITCH_LOW, PITCH_MID, PITCH_HIGH, PITCH_HI
 
 player_t player = (player_t) {
 	.transform = (transform_t) {
-		.position = { 0, 0, 0 },
+		.position = { 0, 50, -300 },
 		.rotation = { 0, 0, 0 },
 		.scale = { 1, 1, 1 },
 	},
@@ -29,14 +33,43 @@ player_t player = (player_t) {
 		.rotation = { 0, 0, 0 },
 		.scale = { 1, 1, 1 },
 	},
+
+	.height = 180,
+	.radius = 15,
+
 	.look_speed = 10,
 	.move_speed = 10,
 };
 
-// stick x 	look	left/right
-// stick y 	move 	forward/back
-// c x 		move	strafe
-// c y 		look	pitch
+void player_update_capsule() {
+	player.capsule.pos = (vector3_t) { player.transform.position.x, player.transform.position.y + player.height / 2.0f, player.transform.position.z };
+	player.capsule.half_len = player.height / 2.0f - player.radius;
+	player.capsule.radius = player.radius;
+}
+
+void player_collide_world() {
+	player_update_capsule();
+
+	ccd.support1 = capsule_support_function;
+	ccd.center1 = capsule_center_function;
+
+	// todo: expand to support multiple collision shapes
+	ccd.support2 = box_support_function;
+	ccd.center2 = box_center_function;
+
+	float depth;
+	ccd_vec3_t dir;
+	ccd_vec3_t pos;
+
+	for (int i = 0; i < collision_count; i++) {
+		int intersect = ccdMPRPenetration(&player.capsule, collision_boxes[i], &ccd, &depth, &dir, &pos);
+		if (intersect == 0) {
+			player.transform.position.x -= dir.v[0] * depth;
+			player.transform.position.y -= dir.v[1] * depth;
+			player.transform.position.z -= dir.v[2] * depth;
+		}
+	}
+}
 
 void player_look(float delta_time) {
 	if (JOYPAD_IS_READY) {
@@ -53,7 +86,12 @@ void player_look(float delta_time) {
 		else if (pressed.c_down && current_pitch_mode > -2)
 			current_pitch_mode--;
 
-		player.camera_transform.rotation.x = fm_lerp(player.camera_transform.rotation.x, pitch_modes[current_pitch_mode + 2], PITCH_LERP_SPEED * delta_time);
+		player.camera_transform.rotation.x = lerp(
+			player.camera_transform.rotation.x,
+			pitch_modes[current_pitch_mode + 2],
+			PITCH_LERP_SPEED * delta_time,
+			0.001f
+		);
 	}
 }
 
@@ -66,9 +104,13 @@ void player_move(float delta_time) {
 		player.transform.position.z += inputs.stick_y * fm_cosf(player.camera_transform.rotation.y) * PLAYER_MOVE_SPEED * delta_time;
 
 		// strafe
-		player.transform.position.x -= inputs.cstick_x * fm_cosf(player.camera_transform.rotation.y) * PLAYER_MOVE_SPEED * delta_time;
+		player.transform.position.x += inputs.cstick_x * -fm_cosf(player.camera_transform.rotation.y) * PLAYER_MOVE_SPEED * delta_time;
 		player.transform.position.z += inputs.cstick_x * fm_sinf(player.camera_transform.rotation.y) * PLAYER_MOVE_SPEED * delta_time;
 	}
+
+	player.transform.position.y -= 200 * delta_time; // todo: ground check and velocity
+
+	player_collide_world();
 }
 
 transform_t player_get_eye() {
