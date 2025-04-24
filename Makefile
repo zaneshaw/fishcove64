@@ -22,7 +22,7 @@ TEXTURE_LIST = $(shell find assets/models/textures/ -type f -name '*.png')
 MODEL_LIST = $(shell find assets/models/ -type f -name '*.glb')
 SOUND_LIST = $(shell find assets/sound/ -type f -name '*.wav')
 
-ASSETS_LIST += $(subst assets,filesystem,$(FONTS_LIST:%.ttf=%.font64))
+ASSETS_LIST += $(subst assets,filesystem,$(FONT_LIST:%.ttf=%.font64))
 ASSETS_LIST += $(subst assets,filesystem,$(IMAGE_LIST:%.png=%.sprite))
 ASSETS_LIST += $(subst assets,filesystem,$(TEXTURE_LIST:%.png=%.sprite))
 ASSETS_LIST += $(subst assets,filesystem,$(MODEL_LIST:%.glb=%.t3dm))
@@ -38,15 +38,15 @@ filesystem/models/textures/%.sprite: assets/models/textures/%.png
 	@echo "    [SPRITE] $@"
 	$(N64_MKSPRITE) $(MKSPRITE_FLAGS) --compress 1 --dither ORDERED -o $(dir $@) "$<"
 
-filesystem/sound/%.wav64: $(ASSETS_DIR)/sound/%.wav
+filesystem/sound/%.wav64: assets/sound/%.wav
 	@mkdir -p $(dir $@)
 	@echo "    [SOUND] $@"
 	$(N64_AUDIOCONV) $(AUDIOCONV_FLAGS) --wav-compress 1 -o $(dir $@) "$<"
 
-filesystem/fonts/%.font64: $(ASSETS_DIR)/fonts/%.ttf
+filesystem/fonts/%.font64: assets/fonts/%.ttf
 	@mkdir -p $(dir $@)
 	@echo "    [FONT] $@"
-	$(N64_MKFONT) $(MKFONT_FLAGS) -o $(dir $@) "$<"
+	$(N64_MKFONT) $(MKFONT_FLAGS) --outline 1 -o $(dir $@) "$<"
 
 filesystem/models/%.t3dm: assets/models/%.glb
 	@mkdir -p $(dir $@)

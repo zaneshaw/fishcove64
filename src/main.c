@@ -3,6 +3,7 @@
 #include "collision/shapes/box.h"
 #include "collision/shapes/capsule.h"
 #include "debug/debug_menu.h"
+#include "font/font.h"
 #include "math/vector3.h"
 #include "player/player.h"
 #include "scene/scene.h"
@@ -25,10 +26,7 @@ void setup() {
 
 	// rdpq_config_enable(RDPQ_CFG_AUTOSYNCPIPE);
 
-	// todo: move to font.c
-	rdpq_font_t* font = rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_MONO);
-	rdpq_text_register_font(1, font);
-
+	font_init();
 	collision_init();
 
 	scene_load(&scene_playground);
