@@ -21,6 +21,7 @@ box_t box;
 
 void setup() {
 	debug_init_isviewer();
+	debug_init_usblog();
 
 	// rdpq_config_enable(RDPQ_CFG_AUTOSYNCPIPE);
 
