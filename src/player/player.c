@@ -1,6 +1,7 @@
 #include "player.h"
 
 #include "../collision/collision.h"
+#include "../collision/raycast.h"
 #include "../collision/shapes/box.h"
 #include "../collision/shapes/capsule.h"
 #include "../math/lerp.h"
@@ -42,7 +43,7 @@ player_t player = (player_t) {
 	},
 
 	.height = 180,
-	.radius = 15,
+	.radius = 25,
 
 	.look_speed = 10,
 	.move_speed = 10,
@@ -83,6 +84,29 @@ void player_collide_world() {
 			player.transform.position.z -= dir.v[2] * depth;
 		}
 	}
+
+	transform_t eye = player_get_eye();
+	fm_vec3_t eye_forward = { {
+		fm_cosf(eye.rotation.x) * fm_sinf(eye.rotation.y),
+		-fm_sinf(eye.rotation.x),
+		fm_cosf(eye.rotation.x) * fm_cosf(eye.rotation.y),
+	} };
+
+	ray_t ray = {
+		.origin = vector3_to_fgeom(eye.position),
+		.dir = eye_forward,
+	};
+
+	cylinder_t cylinder = {
+		.a = { { 1, 1, 1 } },
+		.b = { { 1, 1000, 1 } },
+		.radius = 50.0f,
+	};
+
+	ray_intersect_t ray_intersect;
+	raycast_cylinder(&ray_intersect, &ray, &cylinder);
+	// debugf("x:%f, y:%f, z:%f\n", ray_intersect.point.x, ray_intersect.point.y, ray_intersect.point.z);
+	debugf("%f\n", ray_intersect.dist);
 }
 
 void player_look(float delta_time) {
@@ -114,6 +138,7 @@ void player_look(float delta_time) {
 void player_move(float delta_time) {
 	if (JOYPAD_IS_READY) {
 		joypad_inputs_t inputs = joypad_get_inputs(JOYPAD);
+		joypad_buttons_t buttons = joypad_get_buttons(JOYPAD);
 
 		if (fabsf(inputs.stick_y) > DEADZONE_Y) {
 			// move

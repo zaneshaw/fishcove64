@@ -11,7 +11,7 @@ include $(N64_INST)/include/n64.mk
 include $(N64_INST)/include/t3d.mk
 
 INCLUDE += -I$(N64_INST)/include -Iinclude -Isrc # needed?
-CFLAGS += -I$(N64_INST)/include -I$(N64_INST)/include/ccd -std=gnu17
+CFLAGS += -I$(N64_INST)/include -I$(N64_INST)/include/ccd -std=gnu17 -Og
 LDFLAGS += -g -L$(N64_INST)/lib -l:libccd.a
 
 SOURCES = $(shell find $(SOURCE_DIR) -type f -name '*.c')

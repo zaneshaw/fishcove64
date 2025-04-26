@@ -21,5 +21,7 @@ void vector3_subtract(vector3_t* out, vector3_t* a, vector3_t* b);
 void vector3_multiply(vector3_t* out, vector3_t* a, vector3_t* b);
 void vector3_divide(vector3_t* out, vector3_t* a, vector3_t* b);
 void vector3_scale(vector3_t* out, vector3_t* a, float b);
+void vector3_cross(vector3_t* out, vector3_t* a, vector3_t* b);
+void vector3_rotate_by_quat(vector3_t* out, vector3_t* v, fm_quat_t* q);
 
 #endif // VECTOR3_H_

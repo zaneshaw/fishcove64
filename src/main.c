@@ -45,12 +45,6 @@ int main() {
 	T3DViewport viewport = t3d_viewport_create();
 
 	for (uint64_t frame = 0;; frame++) {
-		if ((int) elapsed / 4 > 0) {
-			elapsed = 0;
-			scene_load(&scene_playground);
-			continue;
-		}
-
 		delta_time = display_get_delta_time();
 		elapsed += delta_time;
 
@@ -71,7 +65,7 @@ int main() {
 		vector3_t eye_target;
 		vector3_add(&eye_target, &eye.position, &eye_forward);
 
-		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(70.0f), 35.0f, 1000.0f);
+		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(70.0f), 20.0f, 1000.0f);
 		t3d_viewport_look_at(
 			&viewport,
 			&vector3_to_fgeom(eye.position),
