@@ -10,6 +10,13 @@ typedef enum {
 	COLLISION_MODE_NONE,
 } collision_mode_t;
 
+typedef enum {
+	COLLISION_SHAPE_NONE,
+	COLLISION_SHAPE_BOX,
+	COLLISION_SHAPE_CAPSULE,
+	COLLISION_SHAPE_CYLINDER,
+} collision_shapes_t;
+
 extern ccd_t ccd;
 
 void collision_init();

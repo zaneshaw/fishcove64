@@ -6,7 +6,7 @@
 #include "font/font.h"
 #include "math/vector3.h"
 #include "player/player.h"
-#include "scene/scene.h"
+#include "scene/scene_loader.h"
 #include "scene/scene_playground.h"
 #include "util/macros.h"
 

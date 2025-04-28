@@ -5,7 +5,7 @@
 #include "../collision/shapes/box.h"
 #include "../collision/shapes/capsule.h"
 #include "../math/lerp.h"
-#include "../scene/scene.h"
+#include "../scene/scene_loader.h"
 #include "../util/macros.h"
 
 #include <debug.h>
@@ -78,8 +78,8 @@ void player_collide_world() {
 
 	for (int i = 0; i < current_scene->collision_boxes_count; i++) {
 		// look into bitwise flags
-		if (current_scene->collision_boxes[i].mode == COLLISION_MODE_COLLIDE || current_scene->collision_boxes[i].mode == COLLISION_MODE_BOTH) {
-			int intersect = ccdMPRPenetration(&player.capsule, &current_scene->collision_boxes[i], &ccd, &depth, &dir, &pos);
+		if (current_scene->collision_boxes[i]->mode == COLLISION_MODE_COLLIDE || current_scene->collision_boxes[i]->mode == COLLISION_MODE_BOTH) {
+			int intersect = ccdMPRPenetration(&player.capsule, current_scene->collision_boxes[i], &ccd, &depth, &dir, &pos);
 			if (intersect == 0) {
 				player.transform.position.x -= dir.v[0] * depth;
 				player.transform.position.y -= dir.v[1] * depth;

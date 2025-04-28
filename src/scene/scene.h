@@ -25,24 +25,19 @@ typedef struct scene_s {
 	int _actor_count;
 	int _actor_capacity;
 
-	char* collision_path;
+	const char* collision_path;
 
-	box_t* collision_boxes;
+	box_t** collision_boxes;
 	int collision_boxes_count;
 
 	cylinder_t* collision_cylinders;
 	int collision_cylinders_count;
 } scene_t;
 
-extern scene_t* current_scene;
+void scene_add_actor(scene_t* scene, actor_t* actor);
 
-void scene_add_box_collisions(scene_t* scene, box_t* boxes, int length);
-
-void scene_load(scene_t* scene);
 void scene_update(float delta_time, float elapsed);
 void scene_render();
 void scene_kill(scene_t* scene);
-
-void scene_add_actor(scene_t* scene, actor_t* actor);
 
 #endif // SCENE_H_

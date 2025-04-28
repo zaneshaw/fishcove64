@@ -15,6 +15,8 @@ scene_t scene_playground = (scene_t) {
 	.fog_near = 200.0f,
 	.fog_far = 400.0f,
 
+	.collision_path = "rom:/files/collisions/playground.json",
+
 	.load = &scene_playground_load,
 	.update = &scene_playground_update,
 	.render = NULL,
@@ -32,7 +34,7 @@ void scene_playground_load(scene_t* this) {
 			.scale = { 1, 1, 1 },
 		},
 		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
-		.model = t3d_model_load("rom://models/scene_playground.t3dm"),
+		.model = t3d_model_load("rom:/models/scene_playground.t3dm"),
 	};
 
 	coolest_totem = malloc(sizeof(actor_t));
@@ -43,7 +45,7 @@ void scene_playground_load(scene_t* this) {
 			.scale = { 1, 1, 1 },
 		},
 		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
-		.model = t3d_model_load("rom://models/coolest_totem.t3dm"),
+		.model = t3d_model_load("rom:/models/coolest_totem.t3dm"),
 	};
 
 	scene_add_actor(&scene_playground, scene_model);
