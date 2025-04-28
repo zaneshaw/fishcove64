@@ -18,46 +18,6 @@ scene_t scene_playground = (scene_t) {
 	.load = &scene_playground_load,
 	.update = &scene_playground_update,
 	.render = NULL,
-
-	.boxes = {
-		{
-			.pos = { 0.0f, -100.0f, 0.0f },
-			.half_extents = { 1000.0f, 100.0f, 1000.0f },
-			.quat = { { 0.0f, 0.0f, 0.0f, 1.0f } },
-		},
-		{
-			.pos = { 300.0f, 0.0f, 300.0f },
-			.half_extents = { 50.0f, 500.0f, 50.0f },
-			.quat = { { 0.0f, 0.0f, 0.0f, 1.0f } },
-		},
-		{
-			.pos = { -300.0f, 0.0f, 300.0f },
-			.half_extents = { 50.0f, 500.0f, 50.0f },
-			.quat = { { 0.0f, 0.0f, 0.0f, 1.0f } },
-		},
-		{
-			.pos = { 300.0f, 0.0f, -300.0f },
-			.half_extents = { 50.0f, 500.0f, 50.0f },
-			.quat = { { 0.0f, 0.0f, 0.0f, 1.0f } },
-		},
-		{
-			.pos = { -300.0f, 0.0f, -300.0f },
-			.half_extents = { 50.0f, 500.0f, 50.0f },
-			.quat = { { 0.0f, 0.0f, 0.0f, 1.0f } },
-		},
-		{
-			.pos = { -200.0f, 150.0f, 200.0f },
-			.half_extents = { 50.0f, 25.0f, 25.0f },
-			// .quat = { { 0.0f, 0.0f, 0.0f, 1.0f } },
-			.quat = { { 0.176777f, 0.306186f, 0.176777f, 0.918559f } },
-		},
-		{
-			.pos = { 200.0f, 0.0f, 200.0f },
-			.half_extents = { 50.0f, 25.0f, 25.0f },
-			// .quat = { { 0.0f, 0.0f, 0.0f, 1.0f } },
-			.quat = { { 0.176777f, 0.306186f, 0.176777f, 0.918559f } },
-		},
-	}
 };
 
 actor_t* scene_model;

@@ -5,6 +5,7 @@
 #include "../collision/shapes/box.h"
 #include "../collision/shapes/capsule.h"
 #include "../math/lerp.h"
+#include "../scene/scene.h"
 #include "../util/macros.h"
 
 #include <debug.h>
@@ -61,7 +62,6 @@ void player_update_capsule() {
 	player.capsule.radius = player.radius;
 }
 
-// todo: move to collision.c
 void player_collide_world() {
 	player_update_capsule();
 
@@ -76,12 +76,15 @@ void player_collide_world() {
 	ccd_vec3_t dir;
 	ccd_vec3_t pos;
 
-	for (int i = 0; i < collision_count; i++) {
-		int intersect = ccdMPRPenetration(&player.capsule, collision_boxes[i], &ccd, &depth, &dir, &pos);
-		if (intersect == 0) {
-			player.transform.position.x -= dir.v[0] * depth;
-			player.transform.position.y -= dir.v[1] * depth;
-			player.transform.position.z -= dir.v[2] * depth;
+	for (int i = 0; i < current_scene->collision_boxes_count; i++) {
+		// look into bitwise flags
+		if (current_scene->collision_boxes[i].mode == COLLISION_MODE_COLLIDE || current_scene->collision_boxes[i].mode == COLLISION_MODE_BOTH) {
+			int intersect = ccdMPRPenetration(&player.capsule, &current_scene->collision_boxes[i], &ccd, &depth, &dir, &pos);
+			if (intersect == 0) {
+				player.transform.position.x -= dir.v[0] * depth;
+				player.transform.position.y -= dir.v[1] * depth;
+				player.transform.position.z -= dir.v[2] * depth;
+			}
 		}
 	}
 
@@ -105,8 +108,6 @@ void player_collide_world() {
 
 	ray_intersect_t ray_intersect;
 	raycast_cylinder(&ray_intersect, &ray, &cylinder);
-	// debugf("x:%f, y:%f, z:%f\n", ray_intersect.point.x, ray_intersect.point.y, ray_intersect.point.z);
-	debugf("%f\n", ray_intersect.dist);
 }
 
 void player_look(float delta_time) {
