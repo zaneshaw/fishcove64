@@ -4,11 +4,11 @@
 BUILD_DIR = build
 SOURCE_DIR = src
 
-PRETTY_NAME = "Fish Cove 64"
-PROJECT_NAME = fishcove64
-
 include $(N64_INST)/include/n64.mk
 include $(N64_INST)/include/t3d.mk
+
+PRETTY_NAME = "Fish Cove 64"
+PROJECT_NAME = fishcove64
 
 INCLUDE += -I$(N64_INST)/include -Iinclude -Isrc -Ilib
 CFLAGS += -I$(N64_INST)/include -I$(N64_INST)/include/ccd -std=gnu17 -Og
@@ -33,8 +33,13 @@ ASSETS_LIST += $(subst assets,filesystem,$(SOUND_LIST:%.wav=%.wav64))
 
 filesystem/files/%: assets/files/%
 	@mkdir -p $(dir $@)
-	@echo "    [FILE] $@"
-	cp "$<" $@
+	@if echo "$@" | grep -q '\.json$$'; then \
+		echo "    [JSON] $@"; \
+		jq -c . "$<" > "$@"; \
+	else \
+		echo "    [FILE] $@"; \
+		cp "$<" "$@"; \
+	fi
 
 filesystem/images/%.sprite: assets/images/%.png
 	@mkdir -p $(dir $@)
@@ -66,8 +71,10 @@ all: $(PROJECT_NAME).z64
 $(BUILD_DIR)/$(PROJECT_NAME).dfs: $(ASSETS_LIST)
 $(BUILD_DIR)/$(PROJECT_NAME).elf: $(SOURCES:$(SOURCE_DIR)/%.c=$(BUILD_DIR)/%.o)
 
-$(PROJECT_NAME).z64: N64_ROM_TITLE=$(PRETTY_NAME)
 $(PROJECT_NAME).z64: $(BUILD_DIR)/$(PROJECT_NAME).dfs
+$(PROJECT_NAME).z64: N64_ROM_TITLE=$(PRETTY_NAME)
+$(PROJECT_NAME).z64: N64_ROM_RTC=1
+$(PROJECT_NAME).z64: N64_ROM_SAVETYPE=sram256k
 
 clean:
 	rm -rf $(BUILD_DIR) *.z64
