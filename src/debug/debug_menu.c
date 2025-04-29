@@ -2,9 +2,10 @@
 
 #include "../font/font.h"
 #include "../player/player.h"
-#include "../util/macros.h"
+#include "../util/constants.h"
 
 #include <display.h>
+#include <libdragon.h>
 #include <n64sys.h>
 #include <rdpq.h>
 #include <rdpq_font.h>
@@ -14,12 +15,18 @@
 #define DEBUG_MENU_LINE_HEIGHT 10
 #define DEBUG_MENU_VALUE_OFFSET 35
 
-bool state = true;
+static const char* const MONTH_SHORT_NAMES[12] = {
+	"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+};
+
+bool menu_state = true;
+bool time_state = true;
 int cursor = 0;
 heap_stats_t stats;
 
 rdpq_textparms_t label_params;
 rdpq_textparms_t value_params;
+rdpq_textparms_t time_params;
 
 void debug_menu_init() {
 	label_params = (rdpq_textparms_t) {
@@ -35,6 +42,13 @@ void debug_menu_init() {
 		.align = ALIGN_LEFT,
 		.valign = VALIGN_TOP,
 	};
+
+	time_params = (rdpq_textparms_t) {
+		.width = (short) display_get_width(),
+		.height = (short) display_get_height(),
+		.align = ALIGN_CENTER,
+		.valign = VALIGN_BOTTOM,
+	};
 }
 
 void debug_menu_draw_entry(const char* label, const char* format, ...) {
@@ -47,26 +61,48 @@ void debug_menu_draw_entry(const char* label, const char* format, ...) {
 	cursor++;
 }
 
-void debug_menu_render(float delta_time, float elapsed) {
-	if (!state) return;
-
-	cursor = 0;
-
-	sys_get_heap_stats(&stats);
-
+void debug_menu_render(float delta_time, float elapsed, time_t now) {
 	rdpq_sync_pipe();
 
-	debug_menu_draw_entry("fps", "%.1f", display_get_fps());
-	debug_menu_draw_entry("time", "%.2f s", elapsed);
-	debug_menu_draw_entry("delta", "%.9f s", delta_time);
-	debug_menu_draw_entry("mem", "%d / %d B", stats.used, stats.total);
-	debug_menu_draw_entry("xpos", "%.2f", player.transform.position.x);
-	debug_menu_draw_entry("ypos", "%.2f", player.transform.position.y);
-	debug_menu_draw_entry("zpos", "%.2f", player.transform.position.z);
-	debug_menu_draw_entry("yaw", "%f", player.camera_transform.rotation.y);
-	debug_menu_draw_entry("pitch", "%f", player.camera_transform.rotation.x);
+	if (menu_state) {
+		cursor = 0;
+
+		sys_get_heap_stats(&stats);
+
+		debug_menu_draw_entry("fps", "%.1f", display_get_fps());
+		debug_menu_draw_entry("time", "%.2f s", elapsed);
+		debug_menu_draw_entry("now", "%d", now);
+		debug_menu_draw_entry("delta", "%.9f s", delta_time);
+		debug_menu_draw_entry("mem", "%d / %d B", stats.used, stats.total);
+		debug_menu_draw_entry("xpos", "%.2f", player.transform.position.x);
+		debug_menu_draw_entry("ypos", "%.2f", player.transform.position.y);
+		debug_menu_draw_entry("zpos", "%.2f", player.transform.position.z);
+		debug_menu_draw_entry("yaw", "%f", player.camera_transform.rotation.y);
+		debug_menu_draw_entry("pitch", "%f", player.camera_transform.rotation.x);
+	}
+
+	if (time_state) {
+		struct tm date_time = *gmtime(&now);
+		rdpq_text_printf(
+			&time_params,
+			FONT_NORMAL,
+			0,
+			-OVERSCAN_PAD_Y,
+			"%d %s %d %02d:%02d:%02d",
+			date_time.tm_mday,
+			MONTH_SHORT_NAMES[CLAMP(date_time.tm_mon, 1, 12)],
+			1900 + date_time.tm_year,
+			date_time.tm_hour,
+			date_time.tm_min,
+			date_time.tm_sec
+		);
+	}
 }
 
 void debug_menu_toggle() {
-	state = !state;
+	menu_state = !menu_state;
+}
+
+void debug_time_toggle() {
+	time_state = !time_state;
 }

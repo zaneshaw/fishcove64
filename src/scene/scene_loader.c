@@ -4,7 +4,7 @@
 #include "../collision/shapes/box.h"
 #include "../collision/shapes/cylinder.h"
 #include "../lib/cjson/cJSON.h"
-#include "../util/macros.h"
+#include "../util/constants.h"
 
 scene_t* current_scene = NULL;
 
@@ -12,17 +12,17 @@ box_t* load_box(cJSON* attr) {
 	box_t* box = malloc(sizeof(box_t));
 
 	while (attr) {
-		if (str_eq(attr->string, "px")) box->pos.x = attr->valuedouble;
-		else if (str_eq(attr->string, "py")) box->pos.y = attr->valuedouble;
-		else if (str_eq(attr->string, "pz")) box->pos.z = attr->valuedouble;
-		else if (str_eq(attr->string, "hex")) box->half_extents.x = attr->valuedouble;
-		else if (str_eq(attr->string, "hey")) box->half_extents.y = attr->valuedouble;
-		else if (str_eq(attr->string, "hez")) box->half_extents.z = attr->valuedouble;
-		else if (str_eq(attr->string, "qx")) box->quat.x = attr->valuedouble;
-		else if (str_eq(attr->string, "qy")) box->quat.y = attr->valuedouble;
-		else if (str_eq(attr->string, "qz")) box->quat.z = attr->valuedouble;
-		else if (str_eq(attr->string, "qw")) box->quat.w = attr->valuedouble;
-		else if (str_eq(attr->string, "mode")) box->mode = attr->valueint;
+		if (STR_EQ(attr->string, "px")) box->pos.x = attr->valuedouble;
+		else if (STR_EQ(attr->string, "py")) box->pos.y = attr->valuedouble;
+		else if (STR_EQ(attr->string, "pz")) box->pos.z = attr->valuedouble;
+		else if (STR_EQ(attr->string, "hex")) box->half_extents.x = attr->valuedouble;
+		else if (STR_EQ(attr->string, "hey")) box->half_extents.y = attr->valuedouble;
+		else if (STR_EQ(attr->string, "hez")) box->half_extents.z = attr->valuedouble;
+		else if (STR_EQ(attr->string, "qx")) box->quat.x = attr->valuedouble;
+		else if (STR_EQ(attr->string, "qy")) box->quat.y = attr->valuedouble;
+		else if (STR_EQ(attr->string, "qz")) box->quat.z = attr->valuedouble;
+		else if (STR_EQ(attr->string, "qw")) box->quat.w = attr->valuedouble;
+		else if (STR_EQ(attr->string, "mode")) box->mode = attr->valueint;
 
 		attr = attr->next;
 	}
@@ -42,9 +42,9 @@ void scene_load_collisions(scene_t* scene) {
 	cJSON* col = json->child;
 	while (col) {
 		cJSON* attr = col->child;
-		assertf(str_eq(attr->string, "shape"), "First key of collision %d must be \"shape\"", i);
+		assertf(STR_EQ(attr->string, "shape"), "First key of collision %d must be \"shape\"", i);
 
-		if (str_eq(attr->valuestring, "box")) {
+		if (STR_EQ(attr->valuestring, "box")) {
 			boxes[boxes_count] = load_box(attr);
 			boxes_count++;
 		}

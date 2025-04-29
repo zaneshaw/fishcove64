@@ -6,7 +6,7 @@
 #include "../collision/shapes/capsule.h"
 #include "../math/lerp.h"
 #include "../scene/scene_loader.h"
-#include "../util/macros.h"
+#include "../util/constants.h"
 
 #include <debug.h>
 #include <t3d/t3dmath.h>

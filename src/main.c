@@ -8,17 +8,16 @@
 #include "player/player.h"
 #include "scene/scene_loader.h"
 #include "scene/scene_playground.h"
-#include "util/macros.h"
+#include "util/constants.h"
 
 #include <debug.h>
 #include <joypad.h>
 #include <t3d/t3dmodel.h>
+#include <time.h>
 
 float delta_time;
 float elapsed = 0.0f;
-
-capsule_t capsule;
-box_t box;
+time_t now;
 
 void setup() {
 	debug_init_isviewer();
@@ -39,6 +38,7 @@ int main() {
 	t3d_init((T3DInitParams) {});
 	dfs_init(DFS_DEFAULT_LOCATION);
 	joypad_init();
+	rtc_init();
 
 	setup();
 
@@ -47,6 +47,7 @@ int main() {
 	for (uint64_t frame = 0;; frame++) {
 		delta_time = display_get_delta_time();
 		elapsed += delta_time;
+		now = time(NULL);
 
 		scene_update(delta_time, elapsed);
 
@@ -82,15 +83,18 @@ int main() {
 
 		t3d_screen_clear_depth();
 
-		if (JOYPAD_IS_READY) {
+		if (JOYPAD_IS_READY && joypad_get_buttons(JOYPAD).z) {
 			if (joypad_get_buttons_pressed(JOYPAD).l) {
 				debug_menu_toggle();
+			}
+			if (joypad_get_buttons_pressed(JOYPAD).r) {
+				debug_time_toggle();
 			}
 		}
 
 		scene_render();
 
-		debug_menu_render(delta_time, elapsed);
+		debug_menu_render(delta_time, elapsed, now);
 
 		rdpq_detach_show();
 	}
