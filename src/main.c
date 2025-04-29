@@ -6,6 +6,7 @@
 #include "font/font.h"
 #include "math/vector3.h"
 #include "player/player.h"
+#include "save/save.h"
 #include "scene/scene_loader.h"
 #include "scene/scene_playground.h"
 #include "util/constants.h"
@@ -18,6 +19,7 @@
 float delta_time;
 float elapsed = 0.0f;
 time_t now;
+save_data_t last_data;
 
 void setup() {
 	debug_init_isviewer();
@@ -83,13 +85,19 @@ int main() {
 
 		t3d_screen_clear_depth();
 
-		if (JOYPAD_IS_READY && joypad_get_buttons(JOYPAD).z) {
-			if (joypad_get_buttons_pressed(JOYPAD).l) {
-				debug_menu_toggle();
+		if (JOYPAD_IS_READY) {
+			joypad_buttons_t buttons = joypad_get_buttons(JOYPAD);
+			joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD);
+			if (buttons.z) {
+				if (pressed.l) debug_menu_toggle();
+				if (pressed.r) debug_time_toggle();
 			}
-			if (joypad_get_buttons_pressed(JOYPAD).r) {
-				debug_time_toggle();
+
+			if (pressed.a) {
+				load(&last_data);
+				elapsed = last_data.elapsed;
 			}
+			if (pressed.b) save(elapsed);
 		}
 
 		scene_render();
