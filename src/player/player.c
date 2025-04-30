@@ -4,9 +4,12 @@
 #include "../collision/raycast.h"
 #include "../collision/shapes/box.h"
 #include "../collision/shapes/capsule.h"
+#include "../game/fishing.h"
+#include "../game/game.h"
 #include "../math/lerp.h"
 #include "../scene/scene_loader.h"
 #include "../util/constants.h"
+#include "inventory.h"
 
 #include <debug.h>
 #include <t3d/t3dmath.h>
@@ -111,7 +114,7 @@ void player_collide_world() {
 }
 
 void player_look(float delta_time) {
-	if (JOYPAD_IS_READY) {
+	if (game_input_state == GAME_INPUT_NORMAL && JOYPAD_IS_READY) {
 		joypad_inputs_t inputs = joypad_get_inputs(JOYPAD);
 		joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD);
 
@@ -137,7 +140,7 @@ void player_look(float delta_time) {
 }
 
 void player_move(float delta_time) {
-	if (JOYPAD_IS_READY) {
+	if (game_input_state == GAME_INPUT_NORMAL && JOYPAD_IS_READY) {
 		joypad_inputs_t inputs = joypad_get_inputs(JOYPAD);
 		joypad_buttons_t buttons = joypad_get_buttons(JOYPAD);
 
@@ -165,6 +168,20 @@ void player_move(float delta_time) {
 	}
 
 	// debugf("x:%.2f, y:%.2f, z:%.2f\n", player.transform.position.x, player.transform.position.y, player.transform.position.z);
+}
+
+void player_interact() {
+	if (game_input_state == GAME_INPUT_NORMAL && JOYPAD_IS_READY) {
+		joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD);
+
+		if (pressed.a) {
+			fish_instance_t fish_instance;
+			fishing_roll(&fish_instance);
+			inventory_add(&fish_instance);
+			inventory_debug();
+			debugf("\n");
+		}
+	}
 }
 
 transform_t player_get_eye() {

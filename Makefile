@@ -18,7 +18,7 @@ SOURCES = $(shell find $(SOURCE_DIR) -type f -name '*.c')
 
 FILE_LIST = $(shell find assets/files/ -type f -name '*.*')
 FONT_LIST = $(shell find assets/fonts/ -type f -name '*.ttf')
-IMAGE_LIST = $(shell find assets/images/ -type f -name '*.png')
+SPRITE_LIST = $(shell find assets/sprites/ -type f -name '*.png')
 TEXTURE_LIST = $(shell find assets/models/textures/ -type f -name '*.png')
 MODEL_LIST = $(shell find assets/models/ -type f -name '*.glb')
 SOUND_LIST = $(shell find assets/sound/ -type f -name '*.wav')
@@ -26,7 +26,7 @@ SOUND_LIST = $(shell find assets/sound/ -type f -name '*.wav')
 
 ASSETS_LIST += $(subst assets,filesystem,$(FILE_LIST))
 ASSETS_LIST += $(subst assets,filesystem,$(FONT_LIST:%.ttf=%.font64))
-ASSETS_LIST += $(subst assets,filesystem,$(IMAGE_LIST:%.png=%.sprite))
+ASSETS_LIST += $(subst assets,filesystem,$(SPRITE_LIST:%.png=%.sprite))
 ASSETS_LIST += $(subst assets,filesystem,$(TEXTURE_LIST:%.png=%.sprite))
 ASSETS_LIST += $(subst assets,filesystem,$(MODEL_LIST:%.glb=%.t3dm))
 ASSETS_LIST += $(subst assets,filesystem,$(SOUND_LIST:%.wav=%.wav64))
@@ -41,7 +41,7 @@ filesystem/files/%: assets/files/%
 		cp "$<" "$@"; \
 	fi
 
-filesystem/images/%.sprite: assets/images/%.png
+filesystem/sprites/%.sprite: assets/sprites/%.png
 	@mkdir -p $(dir $@)
 	@echo "    [SPRITE] $@"
 	$(N64_MKSPRITE) $(MKSPRITE_FLAGS) --compress 1 --dither ORDERED -o $(dir $@) "$<"

@@ -3,6 +3,7 @@
 
 #include <ccd/ccd.h>
 
+// todo: use bit flags
 typedef enum {
 	COLLISION_MODE_BOTH,
 	COLLISION_MODE_COLLIDE, // block player movement

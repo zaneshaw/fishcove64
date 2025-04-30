@@ -4,7 +4,10 @@
 #include "collision/shapes/capsule.h"
 #include "debug/debug_menu.h"
 #include "font/font.h"
+#include "game/game.h"
+#include "lib/pcg/pcg_basic.h"
 #include "math/vector3.h"
+#include "player/inventory.h"
 #include "player/player.h"
 #include "save/save.h"
 #include "scene/scene_loader.h"
@@ -21,15 +24,20 @@ float elapsed = 0.0f;
 time_t now;
 save_data_t last_data;
 
+bool inventory_state = true; // todo: temp
+
 void setup() {
 	debug_init_isviewer();
 	debug_init_usblog();
 
 	// rdpq_config_enable(RDPQ_CFG_AUTOSYNCPIPE);
 
+	pcg32_srandom(0, getentropy32());
+
 	font_init();
 	debug_menu_init();
 	collision_init();
+	fishing_init();
 
 	scene_load(&scene_playground);
 }
@@ -55,8 +63,34 @@ int main() {
 
 		joypad_poll();
 
+		if (JOYPAD_IS_READY) {
+			joypad_buttons_t buttons = joypad_get_buttons(JOYPAD);
+			joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD);
+			if (buttons.z) {
+				if (pressed.l) debug_menu_toggle();
+				if (pressed.r) debug_time_toggle();
+			}
+
+			if (game_input_state == GAME_INPUT_NORMAL) {
+				if (pressed.d_right) {
+					inventory_state = !inventory_state;
+				}
+			} else if (game_input_state == GAME_INPUT_PAUSE) {
+				if (pressed.a) {
+					load(&last_data);
+					elapsed = last_data.elapsed;
+				}
+				if (pressed.b) save(elapsed);
+			}
+
+			if (pressed.start) {
+				game_input_state = (game_input_state + 1) % 2;
+			}
+		}
+
 		player_look(delta_time);
 		player_move(delta_time);
+		player_interact();
 
 		// todo: move to eye/camera struct
 		transform_t eye = player_get_eye();
@@ -85,23 +119,9 @@ int main() {
 
 		t3d_screen_clear_depth();
 
-		if (JOYPAD_IS_READY) {
-			joypad_buttons_t buttons = joypad_get_buttons(JOYPAD);
-			joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD);
-			if (buttons.z) {
-				if (pressed.l) debug_menu_toggle();
-				if (pressed.r) debug_time_toggle();
-			}
-
-			if (pressed.a) {
-				load(&last_data);
-				elapsed = last_data.elapsed;
-			}
-			if (pressed.b) save(elapsed);
-		}
-
 		scene_render();
-
+		if (inventory_state) inventory_render();
+		if (game_input_state == GAME_INPUT_PAUSE) pause_render();
 		debug_menu_render(delta_time, elapsed, now);
 
 		rdpq_detach_show();

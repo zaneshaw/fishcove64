@@ -63,6 +63,9 @@ void debug_menu_draw_entry(const char* label, const char* format, ...) {
 
 void debug_menu_render(float delta_time, float elapsed, time_t now) {
 	rdpq_sync_pipe();
+	rdpq_mode_push();
+
+	rdpq_set_mode_standard();
 
 	if (menu_state) {
 		cursor = 0;
@@ -88,15 +91,18 @@ void debug_menu_render(float delta_time, float elapsed, time_t now) {
 			FONT_NORMAL,
 			0,
 			-OVERSCAN_PAD_Y,
-			"%d %s %d %02d:%02d:%02d",
+			"%d %s %d\n%02d:%02d:%02d %s",
 			date_time.tm_mday,
-			MONTH_SHORT_NAMES[CLAMP(date_time.tm_mon, 1, 12)],
+			MONTH_SHORT_NAMES[CLAMP(date_time.tm_mon, 1, 11)],
 			1900 + date_time.tm_year,
-			date_time.tm_hour,
+			date_time.tm_hour == 0 ? 12 : ((date_time.tm_hour - 1) % 12) + 1,
 			date_time.tm_min,
-			date_time.tm_sec
+			date_time.tm_sec,
+			date_time.tm_hour < 12 ? "AM" : "PM"
 		);
 	}
+
+	rdpq_mode_pop();
 }
 
 void debug_menu_toggle() {
