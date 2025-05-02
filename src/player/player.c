@@ -178,8 +178,6 @@ void player_interact() {
 			fish_instance_t fish_instance;
 			fishing_roll(&fish_instance);
 			inventory_add(&fish_instance);
-			inventory_debug();
-			debugf("\n");
 		}
 	}
 }

@@ -4,6 +4,8 @@
 
 #include <debug.h>
 
+pcg32_random_t* rng = 0x00;
+
 // todo: move to .json file
 fish_t fish[3] = {
 	{
@@ -49,12 +51,17 @@ void fishing_init() {
 
 // probably bad idk
 void fishing_roll(fish_instance_t* fish_instance) {
+	if (!rng) {
+		rng = malloc(sizeof(pcg32_random_t));
+		pcg32_srandom_r(rng, 0, getentropy32());
+	}
+
 	int weight_sum_max = 0;
 	for (int i = 0; i < 3; i++) {
 		weight_sum_max += fish[i].rng_weight;
 	}
 
-	uint32_t rand = pcg32_boundedrand(weight_sum_max);
+	uint32_t rand = pcg32_boundedrand_r(rng, weight_sum_max);
 
 	int fish_index = 0;
 	int weight_sum = 0;
