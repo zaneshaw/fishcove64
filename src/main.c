@@ -2,6 +2,7 @@
 #include "collision/collision.h"
 #include "collision/shapes/box.h"
 #include "collision/shapes/capsule.h"
+#include "debug/debug_draw.h"
 #include "debug/debug_menu.h"
 #include "font/font.h"
 #include "game/game.h"
@@ -14,6 +15,7 @@
 #include "scene/scene_playground.h"
 #include "util/constants.h"
 
+#include <GL/gl_integration.h>
 #include <debug.h>
 #include <joypad.h>
 #include <t3d/t3dmodel.h>
@@ -38,6 +40,7 @@ void setup() {
 	debug_menu_init();
 	collision_init();
 	fishing_init();
+	debug_draw_init();
 
 	scene_load(&scene_playground);
 }
@@ -46,6 +49,7 @@ int main() {
 	display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
 	rdpq_init();
 	t3d_init((T3DInitParams) {});
+	gl_init();
 	dfs_init(DFS_DEFAULT_LOCATION);
 	joypad_init();
 	rtc_init();
@@ -102,7 +106,7 @@ int main() {
 		vector3_t eye_target;
 		vector3_add(&eye_target, &eye.position, &eye_forward);
 
-		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(70.0f), 20.0f, 1000.0f);
+		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(FOV), NEAR_PLANE, FAR_PLANE);
 		t3d_viewport_look_at(
 			&viewport,
 			&vector3_to_fgeom(eye.position),
@@ -112,6 +116,8 @@ int main() {
 
 		rdpq_attach(display_get(), display_get_zbuf());
 
+		debug_draw_look();
+
 		t3d_frame_start();
 		t3d_viewport_attach(&viewport);
 
@@ -120,6 +126,27 @@ int main() {
 		t3d_screen_clear_depth();
 
 		scene_render();
+
+		for (int i = 0; i < current_scene->collision_boxes_count; i++) {
+			box_t* box = current_scene->collision_boxes[i];
+
+			// idc. it works
+			float red = 0.0f;
+			float blue = 0.0f;
+			if (BOX_DEBUG_LEVEL == BOX_DEBUG_COLLIDE) {
+				if ((box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) red = 1.0f;
+			} else if (BOX_DEBUG_LEVEL == BOX_DEBUG_INTERACT) {
+				if ((box->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT) blue = 1.0f;
+			} else if (BOX_DEBUG_LEVEL == (BOX_DEBUG_COLLIDE | BOX_DEBUG_INTERACT)) {
+				if ((box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) red = 1.0f;
+				if ((box->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT) blue = 1.0f;
+			}
+
+			if (red > 0.0f || blue > 0.0f) {
+				debug_draw_box(box, &(fm_vec3_t) { { red, 0.0f, blue } });
+			}
+		}
+
 		if (inventory_state) inventory_render();
 		if (game_input_state == GAME_INPUT_PAUSE) pause_render();
 		debug_menu_render(delta_time, elapsed, now);

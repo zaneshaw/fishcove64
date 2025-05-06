@@ -22,7 +22,7 @@ box_t* load_box(cJSON* attr) {
 		else if (STR_EQ(attr->string, "qy")) box->quat.y = attr->valuedouble;
 		else if (STR_EQ(attr->string, "qz")) box->quat.z = attr->valuedouble;
 		else if (STR_EQ(attr->string, "qw")) box->quat.w = attr->valuedouble;
-		else if (STR_EQ(attr->string, "mode")) box->mode = attr->valueint;
+		else if (STR_EQ(attr->string, "flags")) box->flags = attr->valueint;
 
 		attr = attr->next;
 	}

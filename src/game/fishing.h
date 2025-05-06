@@ -14,7 +14,7 @@ typedef enum {
 } water_type_t;
 
 typedef enum {
-	TOD_STATE_NONE0,
+	TOD_STATE_NONE,
 	TOD_STATE_DAY = 1 << 0,
 	TOD_STATE_NIGHT = 1 << 1,
 } tod_t;

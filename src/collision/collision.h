@@ -5,11 +5,10 @@
 
 // todo: use bit flags
 typedef enum {
-	COLLISION_MODE_BOTH,
-	COLLISION_MODE_COLLIDE, // block player movement
-	COLLISION_MODE_INTERACT, // block rays
-	COLLISION_MODE_NONE,
-} collision_mode_t;
+	COLLISION_FLAG_NONE,
+	COLLISION_FLAG_COLLIDE = 1 << 0, // block player movement
+	COLLISION_FLAG_INTERACT = 1 << 1, // block rays
+} collision_flags_t;
 
 typedef enum {
 	COLLISION_SHAPE_NONE,

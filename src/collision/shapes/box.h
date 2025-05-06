@@ -12,7 +12,7 @@ typedef struct box_s {
 	vector3_t half_extents;
 	fm_quat_t quat;
 
-	collision_mode_t mode;
+	collision_flags_t flags;
 	interaction_t interaction;
 } box_t;
 

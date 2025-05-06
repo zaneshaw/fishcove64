@@ -81,7 +81,7 @@ void player_collide_world() {
 
 	for (int i = 0; i < current_scene->collision_boxes_count; i++) {
 		// look into bitwise flags
-		if (current_scene->collision_boxes[i]->mode == COLLISION_MODE_COLLIDE || current_scene->collision_boxes[i]->mode == COLLISION_MODE_BOTH) {
+		if ((current_scene->collision_boxes[i]->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) {
 			int intersect = ccdMPRPenetration(&player.capsule, current_scene->collision_boxes[i], &ccd, &depth, &dir, &pos);
 			if (intersect == 0) {
 				player.transform.position.x -= dir.v[0] * depth;
@@ -142,7 +142,6 @@ void player_look(float delta_time) {
 void player_move(float delta_time) {
 	if (game_input_state == GAME_INPUT_NORMAL && JOYPAD_IS_READY) {
 		joypad_inputs_t inputs = joypad_get_inputs(JOYPAD);
-		joypad_buttons_t buttons = joypad_get_buttons(JOYPAD);
 
 		if (fabsf(inputs.stick_y) > DEADZONE_Y) {
 			// move

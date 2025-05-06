@@ -1,6 +1,8 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
+#include "../debug/debug_draw.h"
+
 #include <joypad.h>
 
 // https://github.com/DragonMinded/libdragon/blob/trunk/src/utils.h#L12
@@ -10,6 +12,16 @@
 
 #define OVERSCAN_PAD_X (int) 20
 #define OVERSCAN_PAD_Y (int) 15
+
+#define WORLD_SCALE 100.0f / 256.0f
+#define FOV 70.0f
+
+#define NEAR_PLANE 20.0f
+#define FAR_PLANE 1000.0f
+#define GL_NEAR_PLANE 20.0f
+#define GL_FAR_PLANE 2000.0f
+
+#define BOX_DEBUG_LEVEL BOX_DEBUG_INTERACT
 
 #define JOYPAD JOYPAD_PORT_1
 #define JOYPAD_IS_READY joypad_is_connected(JOYPAD) && joypad_get_identifier(JOYPAD) == JOYBUS_IDENTIFIER_N64_CONTROLLER

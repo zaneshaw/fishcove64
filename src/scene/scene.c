@@ -1,5 +1,6 @@
 #include "scene.h"
 
+#include "../util/constants.h"
 #include "scene_loader.h"
 
 void scene_add_actor(scene_t* scene, actor_t* actor) {
@@ -33,7 +34,7 @@ void scene_update(float delta_time, float elapsed) {
 	for (int i = 0; i < current_scene->_actor_count; i++) {
 		actor_t* actor = current_scene->_actors[i];
 		vector3_t scale;
-		vector3_scale(&scale, &actor->transform.scale, 100.0f / 256.0f);
+		vector3_scale(&scale, &actor->transform.scale, WORLD_SCALE);
 
 		t3d_mat4fp_from_srt_euler(
 			actor->transform_matrix,

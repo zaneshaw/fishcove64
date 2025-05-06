@@ -30,7 +30,7 @@ rdpq_textparms_t time_params;
 
 void debug_menu_init() {
 	label_params = (rdpq_textparms_t) {
-		.width = 30,
+		.width = 35,
 		.height = (short) display_get_height(),
 		.align = ALIGN_RIGHT,
 		.valign = VALIGN_TOP,
@@ -55,7 +55,7 @@ void debug_menu_draw_entry(const char* label, const char* format, ...) {
 	va_list va;
 	va_start(va, format);
 
-	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, OVERSCAN_PAD_Y + cursor * DEBUG_MENU_LINE_HEIGHT, "%s:", label);
+	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X - 5, OVERSCAN_PAD_Y + cursor * DEBUG_MENU_LINE_HEIGHT, "%s:", label);
 	rdpq_text_vprintf(&value_params, FONT_NORMAL, OVERSCAN_PAD_X + DEBUG_MENU_VALUE_OFFSET, OVERSCAN_PAD_Y + cursor * DEBUG_MENU_LINE_HEIGHT, format, va);
 
 	cursor++;

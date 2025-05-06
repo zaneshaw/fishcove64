@@ -12,7 +12,7 @@ typedef struct capsule_s {
 	float half_len;
 	float radius;
 
-	collision_mode_t mode;
+	collision_flags_t flags;
 	interaction_t interaction;
 } capsule_t;
 
