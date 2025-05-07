@@ -5,6 +5,8 @@
 
 #include <joypad.h>
 
+// should probably move some constants to the files they actually belong in
+
 // https://github.com/DragonMinded/libdragon/blob/trunk/src/utils.h#L12
 #define MAX(a,b) ({ typeof(a) _a = a; typeof(b) _b = b; _a > _b ? _a : _b; })
 #define MIN(a,b) ({ typeof(a) _a = a; typeof(b) _b = b; _a < _b ? _a : _b; })
@@ -22,6 +24,8 @@
 #define GL_FAR_PLANE 2000.0f
 
 #define BOX_DEBUG_LEVEL BOX_DEBUG_INTERACT
+
+#define PLAYER_REACH 150.0f
 
 #define JOYPAD JOYPAD_PORT_1
 #define JOYPAD_IS_READY joypad_is_connected(JOYPAD) && joypad_get_identifier(JOYPAD) == JOYBUS_IDENTIFIER_N64_CONTROLLER

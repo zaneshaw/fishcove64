@@ -2,7 +2,10 @@
 
 // https://iquilezles.org/articles/intersectors/
 void raycast_cylinder(ray_intersect_t* ray_intersect, ray_t* ray, cylinder_t* cylinder) {
-	*ray_intersect = (ray_intersect_t) { .hit = false };
+	*ray_intersect = (ray_intersect_t) {
+		.hit = false,
+		.dist = INFINITY,
+	};
 
 	fm_vec3_t ba;
 	fm_vec3_sub(&ba, &cylinder->b, &cylinder->a);
@@ -40,8 +43,8 @@ void raycast_cylinder(ray_intersect_t* ray_intersect, ray_t* ray, cylinder_t* cy
 	}
 
 	// caps
-	if (fabsf(bard) >= FM_EPSILON) {
-		t = (((y < 0.0) ? 0.0 : baba) - baoc) / bard;
+	if (fabsf(bard) > FM_EPSILON) {
+		t = (((y < 0.0f) ? 0.0f : baba) - baoc) / bard;
 		if (fabsf(k1 + k2 * t) < h) {
 			fm_vec3_t point;
 			fm_vec3_scale(&point, &ray->dir, t);

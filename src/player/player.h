@@ -19,9 +19,11 @@ typedef struct player_s {
 
 extern player_t player;
 
+void player_init();
 void player_look(float delta_time);
 void player_move(float delta_time);
 void player_interact();
+void player_render();
 transform_t player_get_eye();
 
 #endif // PLAYER_H_

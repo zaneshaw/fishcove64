@@ -10,6 +10,7 @@ typedef struct slot_s {
 
 void inventory_add(fish_instance_t* fish_instance);
 void inventory_render();
+void inventory_toggle();
 void inventory_debug();
 
 #endif // INVENTORY_H_

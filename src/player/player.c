@@ -4,6 +4,7 @@
 #include "../collision/raycast.h"
 #include "../collision/shapes/box.h"
 #include "../collision/shapes/capsule.h"
+#include "../font/font.h"
 #include "../game/fishing.h"
 #include "../game/game.h"
 #include "../math/lerp.h"
@@ -33,6 +34,10 @@
 
 int current_pitch_mode = PLAYER_DEFAULT_PITCH;
 float pitch_modes[] = { PITCH_LOWEST, PITCH_LOW, PITCH_MID, PITCH_HIGH, PITCH_HIGHEST };
+
+interaction_t* target_interaction = NULL;
+
+rdpq_textparms_t interaction_label_params;
 
 player_t player = (player_t) {
 	.transform = (transform_t) {
@@ -80,7 +85,6 @@ void player_collide_world() {
 	ccd_vec3_t pos;
 
 	for (int i = 0; i < current_scene->collision_boxes_count; i++) {
-		// look into bitwise flags
 		if ((current_scene->collision_boxes[i]->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) {
 			int intersect = ccdMPRPenetration(&player.capsule, current_scene->collision_boxes[i], &ccd, &depth, &dir, &pos);
 			if (intersect == 0) {
@@ -90,7 +94,9 @@ void player_collide_world() {
 			}
 		}
 	}
+}
 
+void player_raycast_world() {
 	transform_t eye = player_get_eye();
 	fm_vec3_t eye_forward = { {
 		fm_cosf(eye.rotation.x) * fm_sinf(eye.rotation.y),
@@ -98,19 +104,35 @@ void player_collide_world() {
 		fm_cosf(eye.rotation.x) * fm_cosf(eye.rotation.y),
 	} };
 
+	ray_intersect_t ray_intersect;
 	ray_t ray = {
 		.origin = vector3_to_fgeom(eye.position),
 		.dir = eye_forward,
 	};
 
-	cylinder_t cylinder = {
-		.a = { { 1, 1, 1 } },
-		.b = { { 1, 1000, 1 } },
-		.radius = 50.0f,
-	};
+	float closest = PLAYER_REACH;
+	target_interaction = NULL;
+	for (int i = 0; i < current_scene->collision_cylinders_count; i++) {
+		if ((current_scene->collision_cylinders[i]->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT) {
+			raycast_cylinder(&ray_intersect, &ray, current_scene->collision_cylinders[i]);
+			if (ray_intersect.dist < closest) {
+				closest = ray_intersect.dist;
+				if (current_scene->collision_cylinders[i]->interaction.enabled) {
+					target_interaction = &current_scene->collision_cylinders[i]->interaction;
+				}
+				// target_collision = current_scene->collision_cylinders[i];
+			}
+		}
+	}
+}
 
-	ray_intersect_t ray_intersect;
-	raycast_cylinder(&ray_intersect, &ray, &cylinder);
+void player_init() {
+	interaction_label_params = (rdpq_textparms_t) {
+		.width = (short) display_get_width(),
+		.height = (short) display_get_height(),
+		.align = ALIGN_CENTER,
+		.valign = VALIGN_CENTER,
+	};
 }
 
 void player_look(float delta_time) {
@@ -157,6 +179,7 @@ void player_move(float delta_time) {
 	player.transform.position.y -= 200 * delta_time; // todo: ground check and velocity
 
 	player_collide_world();
+	player_raycast_world();
 
 	if (
 		fabsf(player.transform.position.x) > 15000.0f ||
@@ -165,19 +188,33 @@ void player_move(float delta_time) {
 	) {
 		player_reset();
 	}
-
-	// debugf("x:%.2f, y:%.2f, z:%.2f\n", player.transform.position.x, player.transform.position.y, player.transform.position.z);
 }
 
 void player_interact() {
 	if (game_input_state == GAME_INPUT_NORMAL && JOYPAD_IS_READY) {
 		joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD);
 
-		if (pressed.a) {
+		if (target_interaction != NULL && target_interaction->enabled && pressed.a) {
+			// todo: call interact()
 			fish_instance_t fish_instance;
 			fishing_roll(&fish_instance);
 			inventory_add(&fish_instance);
 		}
+	}
+}
+
+void player_render() {
+	inventory_render();
+
+	if (target_interaction != NULL && target_interaction->enabled) {
+		rdpq_sync_pipe();
+		rdpq_mode_push();
+
+		rdpq_set_mode_standard();
+
+		rdpq_text_printf(&interaction_label_params, FONT_NORMAL, 0, 0, target_interaction->label);
+
+		rdpq_mode_pop();
 	}
 }
 

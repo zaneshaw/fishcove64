@@ -11,8 +11,11 @@ PRETTY_NAME = "Fish Cove 64"
 PROJECT_NAME = fishcove64
 
 INCLUDE += -I$(N64_INST)/include -Iinclude -Isrc -Ilib
-CFLAGS += -I$(N64_INST)/include -I$(N64_INST)/include/ccd -std=gnu17 -Og
+CFLAGS += -I$(N64_INST)/include -I$(N64_INST)/include/ccd -std=gnu17
 LDFLAGS += -g -L$(N64_INST)/lib -l:libccd.a
+
+N64_CFLAGS += -g -O0
+N64_LDFLAGS += -g
 
 SOURCES = $(shell find $(SOURCE_DIR) -type f -name '*.c')
 

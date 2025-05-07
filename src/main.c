@@ -26,8 +26,6 @@ float elapsed = 0.0f;
 time_t now;
 save_data_t last_data;
 
-bool inventory_state = true; // todo: temp
-
 void setup() {
 	debug_init_isviewer();
 	debug_init_usblog();
@@ -41,6 +39,7 @@ void setup() {
 	collision_init();
 	fishing_init();
 	debug_draw_init();
+	player_init();
 
 	scene_load(&scene_playground);
 }
@@ -77,7 +76,7 @@ int main() {
 
 			if (game_input_state == GAME_INPUT_NORMAL) {
 				if (pressed.d_right) {
-					inventory_state = !inventory_state;
+					inventory_toggle();
 				}
 			} else if (game_input_state == GAME_INPUT_PAUSE) {
 				if (pressed.a) {
@@ -147,7 +146,7 @@ int main() {
 			}
 		}
 
-		if (inventory_state) inventory_render();
+		player_render();
 		if (game_input_state == GAME_INPUT_PAUSE) pause_render();
 		debug_menu_render(delta_time, elapsed, now);
 

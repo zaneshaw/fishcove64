@@ -7,7 +7,7 @@ typedef struct interaction_s interaction_t;
 typedef struct interaction_s {
 	bool enabled;
 
-	const char* label;
+	char label[16];
 	void (*interact)(interaction_t* this);
 } interaction_t;
 

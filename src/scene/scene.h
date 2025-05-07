@@ -30,7 +30,7 @@ typedef struct scene_s {
 	box_t** collision_boxes;
 	int collision_boxes_count;
 
-	cylinder_t* collision_cylinders;
+	cylinder_t** collision_cylinders;
 	int collision_cylinders_count;
 } scene_t;
 

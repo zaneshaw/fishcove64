@@ -7,6 +7,8 @@
 
 slot_t slots[INVENTORY_SLOTS];
 
+bool is_open = true;
+
 void inventory_add(fish_instance_t* fish_instance) {
 	for (int i = 0; i < INVENTORY_SLOTS; i++) {
 		if (!slots[i].not_empty) {
@@ -18,6 +20,8 @@ void inventory_add(fish_instance_t* fish_instance) {
 }
 
 void inventory_render() {
+	if (!is_open) return;
+
 	int x = display_get_width() - OVERSCAN_PAD_X - 32 * 3;
 	int y = display_get_height() - OVERSCAN_PAD_Y - 32 * 4;
 
@@ -43,6 +47,10 @@ void inventory_render() {
 	}
 
 	rdpq_mode_pop();
+}
+
+void inventory_toggle() {
+	is_open = !is_open;
 }
 
 void inventory_debug() {

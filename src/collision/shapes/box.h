@@ -8,6 +8,8 @@
 #include <ccd/vec3.h>
 
 typedef struct box_s {
+	char id[16];
+
 	vector3_t pos;
 	vector3_t half_extents;
 	fm_quat_t quat;
