@@ -30,8 +30,6 @@ void setup() {
 	debug_init_isviewer();
 	debug_init_usblog();
 
-	// rdpq_config_enable(RDPQ_CFG_AUTOSYNCPIPE);
-
 	pcg32_srandom(0, getentropy32());
 
 	font_init();
@@ -126,23 +124,17 @@ int main() {
 
 		scene_render();
 
-		for (int i = 0; i < current_scene->collision_boxes_count; i++) {
-			box_t* box = current_scene->collision_boxes[i];
+		if (BOX_DEBUG_LEVEL != BOX_DEBUG_NONE) {
+			for (int i = 0; i < current_scene->collision_boxes_count; i++) {
+				box_t* box = current_scene->collision_boxes[i];
 
-			// idc. it works
-			float red = 0.0f;
-			float blue = 0.0f;
-			if (BOX_DEBUG_LEVEL == BOX_DEBUG_COLLIDE) {
-				if ((box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) red = 1.0f;
-			} else if (BOX_DEBUG_LEVEL == BOX_DEBUG_INTERACT) {
-				if ((box->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT) blue = 1.0f;
-			} else if (BOX_DEBUG_LEVEL == (BOX_DEBUG_COLLIDE | BOX_DEBUG_INTERACT)) {
-				if ((box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) red = 1.0f;
-				if ((box->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT) blue = 1.0f;
-			}
+				// idc. it works
+				float red = (BOX_DEBUG_LEVEL & BOX_DEBUG_COLLIDE) == BOX_DEBUG_COLLIDE && (box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE ? 1.0f : 0.0f;
+				float blue = (BOX_DEBUG_LEVEL & BOX_DEBUG_INTERACT) == BOX_DEBUG_INTERACT && (box->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT ? 1.0f : 0.0f;
 
-			if (red > 0.0f || blue > 0.0f) {
-				debug_draw_box(box, &(fm_vec3_t) { { red, 0.0f, blue } });
+				if (red > 0.0f || blue > 0.0f) {
+					debug_draw_box(box, &(fm_vec3_t) { { red, 0.0f, blue } });
+				}
 			}
 		}
 

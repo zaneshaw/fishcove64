@@ -19,21 +19,23 @@
 #define PLAYER_LOOK_SPEED 0.035f
 #define PITCH_LERP_SPEED 10.0f
 
-#define PITCH_HIGHEST T3D_DEG_TO_RAD(-60)
-#define PITCH_HIGH T3D_DEG_TO_RAD(-30)
-#define PITCH_MID 0
-#define PITCH_LOW T3D_DEG_TO_RAD(30)
-#define PITCH_LOWEST T3D_DEG_TO_RAD(60)
-
 #define PLAYER_DEFAULT_POSITION ((vector3_t) { 0, 100, -300 }) // collision bugs out at 0, 0, 0
 #define PLAYER_DEFAULT_YAW 0
-#define PLAYER_DEFAULT_PITCH 0
+#define PLAYER_DEFAULT_PITCH 3
 
 #define DEADZONE_X 2.5f
 #define DEADZONE_Y 2.5f
 
 int current_pitch_mode = PLAYER_DEFAULT_PITCH;
-float pitch_modes[] = { PITCH_LOWEST, PITCH_LOW, PITCH_MID, PITCH_HIGH, PITCH_HIGHEST };
+float pitch_modes[] = {
+	T3D_DEG_TO_RAD(-75),
+	T3D_DEG_TO_RAD(-50),
+	T3D_DEG_TO_RAD(-25),
+	T3D_DEG_TO_RAD(0),
+	T3D_DEG_TO_RAD(25),
+	T3D_DEG_TO_RAD(50),
+	T3D_DEG_TO_RAD(75),
+};
 
 interaction_t* target_interaction = NULL;
 
@@ -147,14 +149,14 @@ void player_look(float delta_time) {
 		}
 
 		// pitch
-		if (pressed.c_up && current_pitch_mode < 2)
-			current_pitch_mode++;
-		else if (pressed.c_down && current_pitch_mode > -2)
+		if (pressed.c_up && current_pitch_mode > 0)
 			current_pitch_mode--;
+		else if (pressed.c_down && current_pitch_mode < (sizeof(pitch_modes) / sizeof(int)) - 1)
+			current_pitch_mode++;
 
 		player.camera_transform.rotation.x = lerp(
 			player.camera_transform.rotation.x,
-			pitch_modes[current_pitch_mode + 2],
+			pitch_modes[current_pitch_mode],
 			PITCH_LERP_SPEED * delta_time,
 			0.001f
 		);
