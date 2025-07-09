@@ -48,6 +48,8 @@ cylinder_t* load_cylinder(cJSON* attr) {
 			cylinder->interaction = (interaction_t) {
 				.enabled = true
 			};
+
+			// if (STR_EQ(cylinder->id, "water_test")) cylinder->interaction.interact =
 		} else if (cylinder->interaction.enabled) {
 			if (STR_EQ(attr->string, "label")) strcpy(cylinder->interaction.label, attr->valuestring);
 		}

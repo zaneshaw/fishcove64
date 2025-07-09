@@ -7,6 +7,7 @@
 #include "font/font.h"
 #include "game/game.h"
 #include "lib/pcg/pcg_basic.h"
+#include "lib/debug.h"
 #include "math/vector3.h"
 #include "player/inventory.h"
 #include "player/player.h"
@@ -30,6 +31,8 @@ void setup() {
 	debug_init_isviewer();
 	debug_init_usblog();
 
+	debug_initialize();
+
 	pcg32_srandom(0, getentropy32());
 
 	font_init();
@@ -40,6 +43,8 @@ void setup() {
 	player_init();
 
 	scene_load(&scene_playground);
+
+	debug_printcommands();
 }
 
 int main() {
@@ -50,6 +55,8 @@ int main() {
 	dfs_init(DFS_DEFAULT_LOCATION);
 	joypad_init();
 	rtc_init();
+
+	// display_set_fps_limit(30);
 
 	setup();
 

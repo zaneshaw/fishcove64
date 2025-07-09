@@ -7,6 +7,7 @@
 #include "../font/font.h"
 #include "../game/fishing.h"
 #include "../game/game.h"
+#include "../lib/debug.h"
 #include "../math/lerp.h"
 #include "../scene/scene_loader.h"
 #include "../util/constants.h"
@@ -15,7 +16,6 @@
 #include <debug.h>
 #include <t3d/t3dmath.h>
 
-#define PLAYER_MOVE_SPEED 5.0f
 #define PLAYER_LOOK_SPEED 0.035f
 #define PITCH_LERP_SPEED 10.0f
 
@@ -25,6 +25,8 @@
 
 #define DEADZONE_X 2.5f
 #define DEADZONE_Y 2.5f
+
+float player_move_speed = 10.0f;
 
 int current_pitch_mode = PLAYER_DEFAULT_PITCH;
 float pitch_modes[] = {
@@ -128,7 +130,31 @@ void player_raycast_world() {
 	}
 }
 
+char* command_speed() {
+	debugf("aaaa\n"); // doesn't work on usb/hardware
+	int size = debug_sizecommand();
+	char speed[4];
+
+	if (size == 0) {
+		return "must specify speed! try 'speed 5'";
+	} else if (size > 2) {
+		return "specified speed is too high! below 100.";
+	} else {
+		debug_parsecommand(speed);
+		speed[size] = '\0';
+	}
+
+	char* output = (char*) malloc(100);
+	sprintf(output, "speed set from %.2f to %d.00!", player_move_speed, atoi(speed));
+
+	player_move_speed = atoi(speed);
+
+	return output;
+}
+
 void player_init() {
+	debug_addcommand("speed", "sets the player's speed\n\texample usage: speed 5", command_speed);
+
 	interaction_label_params = (rdpq_textparms_t) {
 		.width = (short) display_get_width(),
 		.height = (short) display_get_height(),
@@ -169,13 +195,13 @@ void player_move(float delta_time) {
 
 		if (fabsf(inputs.stick_y) > DEADZONE_Y) {
 			// move
-			player.transform.position.x += inputs.stick_y * fm_sinf(player.camera_transform.rotation.y) * PLAYER_MOVE_SPEED * delta_time;
-			player.transform.position.z += inputs.stick_y * fm_cosf(player.camera_transform.rotation.y) * PLAYER_MOVE_SPEED * delta_time;
+			player.transform.position.x += inputs.stick_y * fm_sinf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
+			player.transform.position.z += inputs.stick_y * fm_cosf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
 		}
 
 		// strafe
-		player.transform.position.x += inputs.cstick_x * -fm_cosf(player.camera_transform.rotation.y) * PLAYER_MOVE_SPEED * delta_time;
-		player.transform.position.z += inputs.cstick_x * fm_sinf(player.camera_transform.rotation.y) * PLAYER_MOVE_SPEED * delta_time;
+		player.transform.position.x += inputs.cstick_x * -fm_cosf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
+		player.transform.position.z += inputs.cstick_x * fm_sinf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
 	}
 
 	player.transform.position.y -= 200 * delta_time; // todo: ground check and velocity
@@ -200,6 +226,7 @@ void player_interact() {
 			// todo: call interact()
 			fish_instance_t fish_instance;
 			fishing_roll(&fish_instance);
+			fishing_debug(false);
 			inventory_add(&fish_instance);
 		}
 	}
