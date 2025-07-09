@@ -29,7 +29,7 @@ void scene_playground_load(scene_t* this) {
 	scene_model = malloc(sizeof(actor_t));
 	*scene_model = (actor_t) {
 		.transform = {
-			.position = { 0, 0, 0 },
+			.position = { 0, 1, 0 },
 			.rotation = { 0, 0, 0 },
 			.scale = { 1, 1, 1 },
 		},
@@ -40,7 +40,7 @@ void scene_playground_load(scene_t* this) {
 	coolest_totem = malloc(sizeof(actor_t));
 	*coolest_totem = (actor_t) {
 		.transform = {
-			.position = { 0, 0, 0 },
+			.position = { 0, 1, 0 },
 			.rotation = { 0, 0, 0 },
 			.scale = { 1, 1, 1 },
 		},
@@ -53,8 +53,5 @@ void scene_playground_load(scene_t* this) {
 }
 
 void scene_playground_update(scene_t* this, float delta_time, float elapsed) {
-	// coolest_totem->transform.position.x = fm_cosf(elapsed * M_TWOPI * 0.3f) * 100.0f;
 	coolest_totem->transform.position.y = fm_sinf(elapsed * M_TWOPI * 0.3f) * 100.0f + 180.0f;
-
-	// coolest_totem->transform.rotation.y = elapsed * M_PI_2;
 }

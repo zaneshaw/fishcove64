@@ -66,12 +66,6 @@ void scene_load_collisions(scene_t* scene) {
 	char* file = asset_load(scene->collision_path, &json_size);
 	cJSON* json = cJSON_ParseWithLength(file, json_size);
 
-	box_t* boxes[128];
-	int boxes_count = 0;
-
-	cylinder_t* cylinders[128];
-	int cylinders_count = 0;
-
 	int i = 0;
 	cJSON* col = json->child;
 	while (col) {
@@ -79,24 +73,22 @@ void scene_load_collisions(scene_t* scene) {
 		assertf(STR_EQ(attr->string, "shape"), "First key of collision %d must be \"shape\"", i);
 
 		if (STR_EQ(attr->valuestring, "box")) {
-			boxes[boxes_count] = load_box(attr);
-			boxes_count++;
+			scene->collisions[scene->collisions_count] = (collision_t) {
+				.type = COLLISION_SHAPE_BOX,
+				.shape = load_box(attr),
+			};
+			scene->collisions_count++;
 		} else if (STR_EQ(attr->valuestring, "cylinder")) {
-			cylinders[cylinders_count] = load_cylinder(attr);
-			cylinders_count++;
+			scene->collisions[scene->collisions_count] = (collision_t) {
+				.type = COLLISION_SHAPE_CYLINDER,
+				.shape = load_cylinder(attr),
+			};
+			scene->collisions_count++;
 		}
 
 		i++;
 		col = col->next;
 	};
-
-	scene->collision_boxes = malloc(sizeof(box_t*) * boxes_count);
-	memcpy(scene->collision_boxes, boxes, sizeof(box_t*) * boxes_count);
-	scene->collision_boxes_count = boxes_count;
-
-	scene->collision_cylinders = malloc(sizeof(cylinder_t*) * cylinders_count);
-	memcpy(scene->collision_cylinders, cylinders, sizeof(cylinder_t*) * cylinders_count);
-	scene->collision_cylinders_count = cylinders_count;
 
 	free(file);
 	cJSON_Delete(json);

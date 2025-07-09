@@ -17,6 +17,11 @@ typedef enum {
 	COLLISION_SHAPE_CYLINDER,
 } collision_shapes_t;
 
+typedef struct collision_s {
+	collision_shapes_t type;
+	void* shape;
+} collision_t;
+
 extern ccd_t ccd;
 
 void collision_init();

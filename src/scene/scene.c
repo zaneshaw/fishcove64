@@ -78,11 +78,9 @@ void scene_kill(scene_t* scene) {
 	free(scene->_actors);
 
 	// free collisions
-	for (int i = 0; i < scene->collision_boxes_count; i++) {
-		free(scene->collision_boxes[i]);
+	for (int i = 0; i < scene->collisions_count; i++) {
+		free(scene->collisions[i].shape);
 	}
 
-	free(scene->collision_boxes);
-	scene->collision_boxes = NULL;
-	scene->collision_boxes_count = 0;
+	scene->collisions_count = 0;
 }

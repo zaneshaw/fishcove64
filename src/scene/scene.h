@@ -27,11 +27,14 @@ typedef struct scene_s {
 
 	const char* collision_path;
 
-	box_t** collision_boxes;
-	int collision_boxes_count;
+	collision_t collisions[128];
+	int collisions_count;
 
-	cylinder_t** collision_cylinders;
-	int collision_cylinders_count;
+	// box_t** collision_boxes;
+	// int collision_boxes_count;
+
+	// cylinder_t** collision_cylinders;
+	// int collision_cylinders_count;
 } scene_t;
 
 void scene_add_actor(scene_t* scene, actor_t* actor);
