@@ -1,7 +1,6 @@
 #ifndef SHAPE_BOX_H_
 #define SHAPE_BOX_H_
 
-#include "../../interaction.h"
 #include "../../math/vector3.h"
 
 #include <ccd/vec3.h>

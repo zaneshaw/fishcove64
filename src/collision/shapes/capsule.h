@@ -1,7 +1,6 @@
 #ifndef SHAPE_CAPSULE_H_
 #define SHAPE_CAPSULE_H_
 
-#include "../../interaction.h"
 #include "../../math/vector3.h"
 
 #include <ccd/vec3.h>

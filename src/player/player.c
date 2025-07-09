@@ -39,7 +39,7 @@ float pitch_modes[] = {
 	T3D_DEG_TO_RAD(75),
 };
 
-interaction_t* target_interaction = NULL;
+actor_t* target_actor = NULL;
 
 rdpq_textparms_t interaction_label_params;
 
@@ -119,7 +119,7 @@ void player_raycast_world() {
 	};
 
 	float closest = PLAYER_REACH;
-	target_interaction = NULL;
+	target_actor = NULL;
 	for (int i = 0; i < current_scene->_actor_count; i++) {
 		for (int j = 0; j < current_scene->_actors[i]->collision_count; j++) {
 			collision_t* col = &current_scene->_actors[i]->collisions[j];
@@ -129,9 +129,7 @@ void player_raycast_world() {
 					raycast_cylinder(&ray_intersect, &ray, cylinder);
 					if (ray_intersect.dist < closest) {
 						closest = ray_intersect.dist;
-						if (current_scene->_actors[i]->interaction.enabled) {
-							target_interaction = &current_scene->_actors[i]->interaction;
-						}
+						target_actor = current_scene->_actors[i];
 					}
 				}
 			}
@@ -231,12 +229,8 @@ void player_interact() {
 	if (game_input_state == GAME_INPUT_NORMAL && JOYPAD_IS_READY) {
 		joypad_buttons_t pressed = joypad_get_buttons_pressed(JOYPAD);
 
-		if (target_interaction != NULL && target_interaction->enabled && pressed.a) {
-			// todo: call interact()
-			fish_instance_t fish_instance;
-			fishing_roll(&fish_instance);
-			fishing_debug(false);
-			inventory_add(&fish_instance);
+		if (target_actor != NULL && target_actor->interact && pressed.a) {
+			target_actor->interact(target_actor);
 		}
 	}
 }
@@ -244,13 +238,13 @@ void player_interact() {
 void player_render() {
 	inventory_render();
 
-	if (target_interaction != NULL && target_interaction->enabled) {
+	if (target_actor != NULL && !STR_EQ(target_actor->label, "")) {
 		rdpq_sync_pipe();
 		rdpq_mode_push();
 
 		rdpq_set_mode_standard();
 
-		rdpq_text_printf(&interaction_label_params, FONT_NORMAL, 0, 0, target_interaction->label);
+		rdpq_text_printf(&interaction_label_params, FONT_NORMAL, 0, 0, target_actor->label);
 
 		rdpq_mode_pop();
 	}
