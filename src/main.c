@@ -131,21 +131,21 @@ int main() {
 
 		scene_render();
 
-		if (BOX_DEBUG_LEVEL != BOX_DEBUG_NONE) {
-			for (int i = 0; i < current_scene->collisions_count; i++) {
-				if (current_scene->collisions[i].type == COLLISION_SHAPE_BOX) {
-					box_t* box = current_scene->collisions[i].shape;
+		// if (BOX_DEBUG_LEVEL != BOX_DEBUG_NONE) {
+		// 	for (int i = 0; i < current_scene->collisions_count; i++) {
+		// 		if (current_scene->collisions[i].type == COLLISION_SHAPE_BOX) {
+		// 			box_t* box = current_scene->collisions[i].shape;
 
-					// idc. it works
-					float red = (BOX_DEBUG_LEVEL & BOX_DEBUG_COLLIDE) == BOX_DEBUG_COLLIDE && (box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE ? 1.0f : 0.0f;
-					float blue = (BOX_DEBUG_LEVEL & BOX_DEBUG_INTERACT) == BOX_DEBUG_INTERACT && (box->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT ? 1.0f : 0.0f;
+		// 			// idc. it works
+		// 			float red = (BOX_DEBUG_LEVEL & BOX_DEBUG_COLLIDE) == BOX_DEBUG_COLLIDE && (box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE ? 1.0f : 0.0f;
+		// 			float blue = (BOX_DEBUG_LEVEL & BOX_DEBUG_INTERACT) == BOX_DEBUG_INTERACT && (box->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT ? 1.0f : 0.0f;
 
-					if (red > 0.0f || blue > 0.0f) {
-						debug_draw_box(box, &(fm_vec3_t) { { red, 0.0f, blue } });
-					}
-				}
-			}
-		}
+		// 			if (red > 0.0f || blue > 0.0f) {
+		// 				debug_draw_box(box, &(fm_vec3_t) { { red, 0.0f, blue } });
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		player_render();
 		if (game_input_state == GAME_INPUT_PAUSE) pause_render();

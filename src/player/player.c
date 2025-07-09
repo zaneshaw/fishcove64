@@ -88,10 +88,11 @@ void player_collide_world() {
 	ccd_vec3_t dir;
 	ccd_vec3_t pos;
 
-	for (int i = 0; i < current_scene->collisions_count; i++) {
-		if (current_scene->collisions[i].type == COLLISION_SHAPE_BOX) {
-			box_t* box = current_scene->collisions[i].shape;
-			if ((box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) {
+	for (int i = 0; i < current_scene->_actor_count; i++) {
+		for (int j = 0; j < current_scene->_actors[i]->collision_count; j++) {
+			collision_t* col = &current_scene->_actors[i]->collisions[j];
+			if ((col->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) {
+				box_t* box = col->shape;
 				int intersect = ccdMPRPenetration(&player.capsule, box, &ccd, &depth, &dir, &pos);
 				if (intersect == 0) {
 					player.transform.position.x -= dir.v[0] * depth;
@@ -119,17 +120,19 @@ void player_raycast_world() {
 
 	float closest = PLAYER_REACH;
 	target_interaction = NULL;
-	for (int i = 0; i < current_scene->collisions_count; i++) {
-		if (current_scene->collisions[i].type == COLLISION_SHAPE_CYLINDER) {
-			cylinder_t* cylinder = current_scene->collisions[i].shape;
-			if ((cylinder->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT) {
-				raycast_cylinder(&ray_intersect, &ray, cylinder);
-				if (ray_intersect.dist < closest) {
-					closest = ray_intersect.dist;
-					if (cylinder->interaction.enabled) {
-						target_interaction = &cylinder->interaction;
+	for (int i = 0; i < current_scene->_actor_count; i++) {
+		for (int j = 0; j < current_scene->_actors[i]->collision_count; j++) {
+			collision_t* col = &current_scene->_actors[i]->collisions[j];
+			if ((col->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT) {
+				if (col->type == COLLISION_SHAPE_CYLINDER) {
+					cylinder_t* cylinder = col->shape;
+					raycast_cylinder(&ray_intersect, &ray, cylinder);
+					if (ray_intersect.dist < closest) {
+						closest = ray_intersect.dist;
+						if (current_scene->_actors[i]->interaction.enabled) {
+							target_interaction = &current_scene->_actors[i]->interaction;
+						}
 					}
-					// target_collision = current_scene->collision_cylinders[i];
 				}
 			}
 		}

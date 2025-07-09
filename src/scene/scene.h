@@ -25,10 +25,10 @@ typedef struct scene_s {
 	int _actor_count;
 	int _actor_capacity;
 
-	const char* collision_path;
+	// const char* collision_path;
 
-	collision_t collisions[128];
-	int collisions_count;
+	// collision_t collisions[128];
+	// int collisions_count;
 
 	// box_t** collision_boxes;
 	// int collision_boxes_count;

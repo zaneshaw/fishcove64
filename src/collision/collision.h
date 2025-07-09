@@ -19,11 +19,13 @@ typedef enum {
 
 typedef struct collision_s {
 	collision_shapes_t type;
+	collision_flags_t flags;
 	void* shape;
 } collision_t;
 
 extern ccd_t ccd;
 
 void collision_init();
+collision_t* collision_allocate(int count, collision_t* collisions);
 
 #endif // COLLISION_H_
