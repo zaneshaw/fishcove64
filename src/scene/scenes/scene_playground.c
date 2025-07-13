@@ -1,11 +1,12 @@
-#include "scene_playground.h"
-
-#include "../collision/collision.h"
-#include "../game/fishing.h"
-#include "../player/inventory.h"
-#include "scene.h"
+#include "../../collision/collision.h"
+#include "../../game/fishing.h"
+#include "../../player/inventory.h"
+#include "../scene.h"
 
 #include <t3d/t3dmodel.h>
+
+static void load(scene_t* this);
+static void update(scene_t* this, float delta_time, float elapsed);
 
 scene_t scene_playground = (scene_t) {
 	.name = "Playground",
@@ -18,23 +19,23 @@ scene_t scene_playground = (scene_t) {
 	.fog_near = 200.0f,
 	.fog_far = 400.0f,
 
-	.load = &scene_playground_load,
-	.update = &scene_playground_update,
+	.load = &load,
+	.update = &update,
 	.render = NULL,
 };
 
-actor_t* world;
-actor_t* coolest_totem;
-actor_t* pond;
+static actor_t* world;
+static actor_t* coolest_totem;
+static actor_t* pond;
 
-void pond_interact() {
+static void pond_interact() {
 	fish_instance_t fish_instance;
 	fishing_roll(&fish_instance);
 	fishing_debug(false);
 	inventory_add(&fish_instance);
 }
 
-void scene_playground_load(scene_t* this) {
+static void load(scene_t* this) {
 	world = malloc(sizeof(actor_t));
 	*world = (actor_t) {
 		.transform = {
@@ -43,7 +44,7 @@ void scene_playground_load(scene_t* this) {
 			.scale = { 1, 1, 1 },
 		},
 		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
-		.model = t3d_model_load("rom:/models/scene_playground.t3dm"),
+		.model = t3d_model_load("rom:/models/scenes/playground/world.t3dm"),
 
 		.label = "i am the world",
 
@@ -121,23 +122,23 @@ void scene_playground_load(scene_t* this) {
 	coolest_totem = malloc(sizeof(actor_t));
 	*coolest_totem = (actor_t) {
 		.transform = {
-			.position = { 0, 0, 0 },
+			.position = { 0, 180, 0 },
 			.rotation = { 0, 0, 0 },
 			.scale = { 1, 1, 1 },
 		},
 		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
-		.model = t3d_model_load("rom:/models/coolest_totem.t3dm"),
+		.model = t3d_model_load("rom:/models/scenes/playground/coolest_totem.t3dm"),
 	};
 
 	pond = malloc(sizeof(actor_t));
 	*pond = (actor_t) {
 		.transform = {
-			.position = { 0, 0, 0 },
+			.position = { 0, 0, 300 },
 			.rotation = { 0, 0, 0 },
 			.scale = { 1, 1, 1 },
 		},
 		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
-		.model = t3d_model_load("rom:/models/pond.t3dm"),
+		.model = t3d_model_load("rom:/models/scenes/playground/pond.t3dm"),
 
 		.label = "i am the water pond",
 		.interact = &pond_interact,
@@ -164,6 +165,6 @@ void scene_playground_load(scene_t* this) {
 	scene_add_actor(&scene_playground, pond);
 }
 
-void scene_playground_update(scene_t* this, float delta_time, float elapsed) {
+static void update(scene_t* this, float delta_time, float elapsed) {
 	coolest_totem->transform.position.y = fm_sinf(elapsed * M_TWOPI * 0.3f) * 100.0f + 180.0f;
 }

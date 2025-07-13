@@ -69,8 +69,8 @@ void scene_render() {
 
 void scene_kill(scene_t* scene) {
 	// free actors and collisions
-	for (int i = 0; i < current_scene->_actor_count; i++) {
-		actor_kill(current_scene->_actors[i]);
+	for (int i = 0; i < scene->_actor_count; i++) {
+		actor_kill(scene->_actors[i]);
 	}
 
 	scene->_actor_count = 0;

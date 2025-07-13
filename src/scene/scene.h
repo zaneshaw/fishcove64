@@ -37,6 +37,9 @@ typedef struct scene_s {
 	// int collision_cylinders_count;
 } scene_t;
 
+extern scene_t scene_playground;
+extern scene_t scene_area1;
+
 void scene_add_actor(scene_t* scene, actor_t* actor);
 
 void scene_update(float delta_time, float elapsed);

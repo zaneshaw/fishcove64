@@ -13,7 +13,7 @@
 #include "player/player.h"
 #include "save/save.h"
 #include "scene/scene_loader.h"
-#include "scene/scene_playground.h"
+#include "scene/scene.h"
 #include "util/constants.h"
 
 #include <GL/gl_integration.h>
@@ -89,6 +89,12 @@ int main() {
 					elapsed = last_data.elapsed;
 				}
 				if (pressed.b) save(elapsed);
+
+				if (pressed.d_left) {
+					scene_load(&scene_playground);
+				} else if (pressed.d_right) {
+					scene_load(&scene_area1);
+				}
 			}
 
 			if (pressed.start) {
