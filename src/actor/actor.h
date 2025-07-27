@@ -21,6 +21,9 @@ typedef struct actor_s {
 
 	collision_t* collisions;
 	int collision_count;
+
+	bool clear_depth;
+	bool disable_depth;
 } actor_t;
 
 void actor_draw(actor_t* actor);

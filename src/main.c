@@ -67,8 +67,6 @@ int main() {
 		elapsed += delta_time;
 		now = time(NULL);
 
-		scene_update(delta_time, elapsed);
-
 		joypad_poll();
 
 		if (JOYPAD_IS_READY) {
@@ -123,6 +121,8 @@ int main() {
 			&vector3_to_fgeom(eye_target),
 			&vector3_to_fgeom(vector3_up)
 		);
+
+		scene_update(delta_time, elapsed);
 
 		rdpq_attach(display_get(), display_get_zbuf());
 

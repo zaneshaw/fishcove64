@@ -11,7 +11,17 @@ void actor_draw(actor_t* actor) {
 
 	t3d_matrix_push(actor->transform_matrix);
 
+	if (actor->disable_depth) {
+		rdpq_mode_zbuf(false, false);
+	}
+
 	rspq_block_run(actor->block);
+
+	if (actor->disable_depth) {
+		rdpq_sync_pipe();
+		rdpq_mode_zbuf(true, true);
+	}
+	if (actor->clear_depth) t3d_screen_clear_depth();
 
 	t3d_matrix_pop(1);
 }

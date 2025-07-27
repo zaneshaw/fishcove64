@@ -22,7 +22,7 @@ SOURCES = $(shell find $(SOURCE_DIR) -type f -name '*.c')
 FILE_LIST = $(shell find assets/files/ -type f -name '*.*')
 FONT_LIST = $(shell find assets/fonts/ -type f -name '*.ttf')
 SPRITE_LIST = $(shell find assets/sprites/ -type f -name '*.png')
-TEXTURE_LIST = $(shell find assets/models/textures/ -type f -name '*.png')
+TEXTURE_LIST = $(shell find assets/textures/ -type f -name '*.png')
 MODEL_LIST = $(shell find assets/models/ -type f -name '*.glb')
 SOUND_LIST = $(shell find assets/sound/ -type f -name '*.wav')
 SOUND_LIST = $(shell find assets/sound/ -type f -name '*.wav')
@@ -49,7 +49,7 @@ filesystem/sprites/%.sprite: assets/sprites/%.png
 	@echo "    [SPRITE] $@"
 	$(N64_MKSPRITE) $(MKSPRITE_FLAGS) --compress 1 --dither ORDERED -o $(dir $@) "$<"
 
-filesystem/models/textures/%.sprite: assets/models/textures/%.png
+filesystem/textures/%.sprite: assets/textures/%.png
 	@mkdir -p $(dir $@)
 	@echo "    [SPRITE] $@"
 	$(N64_MKSPRITE) $(MKSPRITE_FLAGS) --compress 1 --dither ORDERED -o $(dir $@) "$<"
