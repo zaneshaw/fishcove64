@@ -11,12 +11,11 @@ scene_t scene_area1 = (scene_t) {
 	.name = "Area 1",
 
 	.clear_color = (color_t) { 0xFF, 0xFF, 0xFF, 0xFF },
-	.ambient_color = (uint8_t[]) { 200, 200, 200, 0xFF },
+	.ambient_color = (uint8_t[]) { 0xA0, 0xA0, 0xC8, 0xFF },
+	.sun_color = (uint8_t[]) { 0xC8, 0xC8, 0xFF, 0xFF },
+	.sun_dir = (fm_vec3_t) { { 0.4f, 1.0f, -1.0f } },
 
-	.fog_enabled = true,
-	.fog_color = (color_t) { 0xFF, 0xFF, 0xFF, 0xFF },
-	.fog_near = 200.0f,
-	.fog_far = 400.0f,
+	.fog_enabled = false,
 
 	.load = &load,
 	.update = NULL,
@@ -45,7 +44,7 @@ static void load(scene_t* this) {
 					.flags = COLLISION_FLAG_COLLIDE,
 					.shape = &(box_t) {
 						.pos = { 0, -100, 0 },
-						.half_extents = { 1000, 100, 1000 },
+						.half_extents = { 10000, 100, 10000 },
 						.quat = { { 0, 0, 0, 1 } },
 					},
 				},

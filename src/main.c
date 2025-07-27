@@ -42,7 +42,7 @@ void setup() {
 	debug_draw_init();
 	player_init();
 
-	scene_load(&scene_playground);
+	scene_load(&scene_area1);
 
 	debug_printcommands();
 }

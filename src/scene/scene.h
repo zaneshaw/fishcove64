@@ -15,6 +15,8 @@ typedef struct scene_s {
 
 	color_t clear_color;
 	const uint8_t* ambient_color;
+	const uint8_t* sun_color;
+	fm_vec3_t sun_dir;
 
 	bool fog_enabled;
 	color_t fog_color;

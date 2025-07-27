@@ -19,7 +19,7 @@
 #define FOV 70.0f
 
 #define NEAR_PLANE 20.0f
-#define FAR_PLANE 1000.0f
+#define FAR_PLANE 2000.0f
 #define GL_NEAR_PLANE 20.0f
 #define GL_FAR_PLANE 2000.0f
 

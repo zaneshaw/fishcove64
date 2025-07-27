@@ -50,6 +50,12 @@ void scene_render() {
 
 	t3d_light_set_ambient(current_scene->ambient_color);
 
+	fm_vec3_t sun_dir = current_scene->sun_dir;
+	t3d_vec3_norm(&sun_dir);
+
+	t3d_light_set_directional(0, current_scene->sun_color, &current_scene->sun_dir);
+	t3d_light_set_count(1);
+
 	if (current_scene->fog_enabled) {
 		rdpq_mode_fog(RDPQ_FOG_STANDARD);
 		rdpq_set_fog_color(current_scene->fog_color);

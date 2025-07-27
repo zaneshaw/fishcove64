@@ -13,6 +13,8 @@ scene_t scene_playground = (scene_t) {
 
 	.clear_color = (color_t) { 0xFF, 0xFF, 0xFF, 0xFF },
 	.ambient_color = (uint8_t[]) { 200, 200, 200, 0xFF },
+	.sun_color = (uint8_t[]) { 0xC8, 0xC8, 0xFF, 0xFF },
+	.sun_dir = (fm_vec3_t) { { 0.4f, 1.0f, -1.0f } },
 
 	.fog_enabled = true,
 	.fog_color = (color_t) { 0xFF, 0xFF, 0xFF, 0xFF },

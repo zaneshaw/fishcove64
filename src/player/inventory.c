@@ -7,7 +7,7 @@
 
 slot_t slots[INVENTORY_SLOTS];
 
-bool is_open = true;
+bool is_open = false;
 
 void inventory_add(fish_instance_t* fish_instance) {
 	for (int i = 0; i < INVENTORY_SLOTS; i++) {
