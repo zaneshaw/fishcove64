@@ -6,14 +6,14 @@
 #include "debug/debug_menu.h"
 #include "font/font.h"
 #include "game/game.h"
-#include "lib/pcg/pcg_basic.h"
 #include "lib/debug.h"
+#include "lib/pcg/pcg_basic.h"
 #include "math/vector3.h"
 #include "player/inventory.h"
 #include "player/player.h"
 #include "save/save.h"
-#include "scene/scene_loader.h"
 #include "scene/scene.h"
+#include "scene/scene_loader.h"
 #include "util/constants.h"
 
 #include <GL/gl_integration.h>
@@ -48,7 +48,7 @@ void setup() {
 }
 
 int main() {
-	display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
+	display_init((resolution_t) { .width = 320L, .height = 288L }, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
 	rdpq_init();
 	t3d_init((T3DInitParams) {});
 	gl_init();
@@ -61,6 +61,13 @@ int main() {
 	setup();
 
 	T3DViewport viewport = t3d_viewport_create();
+	t3d_viewport_set_area(
+		&viewport,
+		OVERSCAN_PAD_X,
+		OVERSCAN_PAD_Y,
+		(int32_t) display_get_width() - OVERSCAN_PAD_X * 2,
+		(int32_t) display_get_height() - OVERSCAN_PAD_Y * 2
+	);
 
 	for (uint64_t frame = 0;; frame++) {
 		delta_time = display_get_delta_time();
@@ -136,24 +143,8 @@ int main() {
 		t3d_screen_clear_depth();
 
 		scene_render();
-
-		// if (BOX_DEBUG_LEVEL != BOX_DEBUG_NONE) {
-		// 	for (int i = 0; i < current_scene->collisions_count; i++) {
-		// 		if (current_scene->collisions[i].type == COLLISION_SHAPE_BOX) {
-		// 			box_t* box = current_scene->collisions[i].shape;
-
-		// 			// idc. it works
-		// 			float red = (BOX_DEBUG_LEVEL & BOX_DEBUG_COLLIDE) == BOX_DEBUG_COLLIDE && (box->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE ? 1.0f : 0.0f;
-		// 			float blue = (BOX_DEBUG_LEVEL & BOX_DEBUG_INTERACT) == BOX_DEBUG_INTERACT && (box->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT ? 1.0f : 0.0f;
-
-		// 			if (red > 0.0f || blue > 0.0f) {
-		// 				debug_draw_box(box, &(fm_vec3_t) { { red, 0.0f, blue } });
-		// 			}
-		// 		}
-		// 	}
-		// }
-
 		player_render();
+
 		if (game_input_state == GAME_INPUT_PAUSE) pause_render();
 		debug_menu_render(delta_time, elapsed, now);
 
