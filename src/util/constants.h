@@ -18,8 +18,8 @@
 #define WORLD_SCALE 100.0f / 256.0f
 #define FOV 70.0f
 
-#define NEAR_PLANE 20.0f
-#define FAR_PLANE 1200.0f
+#define NEAR_PLANE 50.0f
+#define FAR_PLANE 1500.0f
 #define GL_NEAR_PLANE 20.0f
 #define GL_FAR_PLANE 2000.0f
 

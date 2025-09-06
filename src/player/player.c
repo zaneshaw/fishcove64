@@ -26,7 +26,7 @@
 #define DEADZONE_X 2.5f
 #define DEADZONE_Y 2.5f
 
-float player_move_speed = 5.0f;
+float player_move_speed = 3.0f;
 
 int current_pitch_mode = PLAYER_DEFAULT_PITCH;
 float pitch_modes[] = {
