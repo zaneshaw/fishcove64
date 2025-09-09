@@ -1,8 +1,4 @@
 #include "actor/actor.h"
-#include "collision/collision.h"
-#include "collision/shapes/box.h"
-#include "collision/shapes/capsule.h"
-#include "debug/debug_draw.h"
 #include "debug/debug_menu.h"
 #include "font/font.h"
 #include "game/game.h"
@@ -37,12 +33,10 @@ void setup() {
 
 	font_init();
 	debug_menu_init();
-	collision_init();
 	fishing_init();
-	debug_draw_init();
 	player_init();
 
-	scene_load(&scene_area1);
+	scene_load(&scene_collision_test);
 
 	debug_printcommands();
 }
@@ -99,6 +93,8 @@ int main() {
 					scene_load(&scene_playground);
 				} else if (pressed.d_right) {
 					scene_load(&scene_area1);
+				} else if (pressed.d_up) {
+					scene_load(&scene_collision_test);
 				}
 			}
 
@@ -133,8 +129,6 @@ int main() {
 
 		rdpq_attach(display_get(), display_get_zbuf());
 
-		debug_draw_look();
-
 		t3d_frame_start();
 		t3d_viewport_attach(&viewport);
 
@@ -145,8 +139,8 @@ int main() {
 		scene_render();
 		player_render();
 
-		if (game_input_state == GAME_INPUT_PAUSE) pause_render();
 		debug_menu_render(delta_time, elapsed, now);
+		if (game_input_state == GAME_INPUT_PAUSE) pause_render();
 
 		rdpq_detach_show();
 	}

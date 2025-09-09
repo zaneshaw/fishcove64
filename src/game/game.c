@@ -24,8 +24,9 @@ void pause_render() {
 		.valign = VALIGN_BOTTOM,
 	};
 
-	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, -OVERSCAN_PAD_Y - 30, "L D-pad: playground");
-	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, -OVERSCAN_PAD_Y - 20, "R D-pad: area 1");
+	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, -OVERSCAN_PAD_Y - 50, "Left D-pad: playground");
+	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, -OVERSCAN_PAD_Y - 40, "Right D-pad: area 1");
+	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, -OVERSCAN_PAD_Y - 30, "Up D-pad: collision testing zone");
 
 	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, -OVERSCAN_PAD_Y - 10, "B: save");
 	rdpq_text_printf(&label_params, FONT_NORMAL, OVERSCAN_PAD_X, -OVERSCAN_PAD_Y, "A: load");

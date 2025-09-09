@@ -1,8 +1,6 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
-#include "../debug/debug_draw.h"
-
 #include <joypad.h>
 
 // should probably move some constants to the files they actually belong in

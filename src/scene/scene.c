@@ -82,4 +82,13 @@ void scene_kill(scene_t* scene) {
 	scene->_actor_count = 0;
 	scene->_actor_capacity = 0;
 	free(scene->_actors);
+
+	free(scene->collision.mesh.vertices);
+	scene->collision.mesh.vertex_count = 0;
+
+	free(scene->collision.mesh.normals);
+	scene->collision.mesh.normal_count = 0;
+
+	free(scene->collision.mesh.tris);
+	scene->collision.mesh.tri_count = 0;
 }

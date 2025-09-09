@@ -1,9 +1,6 @@
 #include "player.h"
 
 #include "../collision/collision.h"
-#include "../collision/raycast.h"
-#include "../collision/shapes/box.h"
-#include "../collision/shapes/capsule.h"
 #include "../font/font.h"
 #include "../game/fishing.h"
 #include "../game/game.h"
@@ -19,8 +16,6 @@
 #define PLAYER_LOOK_SPEED 0.035f
 #define PITCH_LERP_SPEED 10.0f
 
-#define PLAYER_DEFAULT_POSITION ((vector3_t) { 0, 100, -300 }) // collision bugs out at 0, 0, 0
-#define PLAYER_DEFAULT_YAW 0
 #define PLAYER_DEFAULT_PITCH 3
 
 #define DEADZONE_X 2.5f
@@ -45,8 +40,6 @@ rdpq_textparms_t interaction_label_params;
 
 player_t player = (player_t) {
 	.transform = (transform_t) {
-		.position = PLAYER_DEFAULT_POSITION,
-		.rotation = { 0, PLAYER_DEFAULT_YAW, 0 },
 		.scale = { 1, 1, 1 },
 	},
 	.camera_transform = (transform_t) {
@@ -62,79 +55,40 @@ player_t player = (player_t) {
 	.move_speed = 10,
 };
 
-void player_reset() {
-	player.transform.position = PLAYER_DEFAULT_POSITION;
-	player.transform.rotation.y = PLAYER_DEFAULT_YAW; // just doesn't work sometimes?!
-	current_pitch_mode = PLAYER_DEFAULT_PITCH;
-}
+bool player_collide_world(vector3_t pos) {
+	vec2_t player_pos = { pos.x, pos.z };
+	for (int i = 0; i < current_scene->collision.mesh.tri_count; i++) {
+		bool intersect = overlap_point2d_triangle2d(
+			player_pos,
+			current_scene->collision.mesh.vertices[current_scene->collision.mesh.tris[i].v1],
+			current_scene->collision.mesh.vertices[current_scene->collision.mesh.tris[i].v2],
+			current_scene->collision.mesh.vertices[current_scene->collision.mesh.tris[i].v3]
+		);
 
-void player_update_capsule() {
-	player.capsule.pos = (vector3_t) { player.transform.position.x, player.transform.position.y + player.height / 2.0f, player.transform.position.z };
-	player.capsule.half_len = player.height / 2.0f - player.radius;
-	player.capsule.radius = player.radius;
-}
+		if (intersect) {
+			// https://iquilezles.org/articles/intersectors/
+			ray_t ray;
+			ray.origin = (fm_vec3_t) { { player.transform.position.x, player.transform.position.y, player.transform.position.z } };
+			ray.direction = (fm_vec3_t) { { 0, -1, 0 } };
 
-void player_collide_world() {
-	player_update_capsule();
+			fm_vec3_t* normal = &current_scene->collision.mesh.normals[current_scene->collision.mesh.tris[i].normal];
 
-	ccd.support1 = capsule_support_function;
-	ccd.center1 = capsule_center_function;
+			plane_t plane;
+			plane.normal = *normal;
+			plane.offset = fm_vec3_dot(&current_scene->collision.mesh.vertices[current_scene->collision.mesh.tris[i].v1], normal);
 
-	// todo: expand to support multiple collision shapes
-	ccd.support2 = box_support_function;
-	ccd.center2 = box_center_function;
+			float distance = intersect_ray3d_plane3d(ray, plane);
 
-	float depth;
-	ccd_vec3_t dir;
-	ccd_vec3_t pos;
-
-	for (int i = 0; i < current_scene->_actor_count; i++) {
-		for (int j = 0; j < current_scene->_actors[i]->collision_count; j++) {
-			collision_t* col = &current_scene->_actors[i]->collisions[j];
-			if ((col->flags & COLLISION_FLAG_COLLIDE) == COLLISION_FLAG_COLLIDE) {
-				box_t* box = col->shape;
-				int intersect = ccdMPRPenetration(&player.capsule, box, &ccd, &depth, &dir, &pos);
-				if (intersect == 0) {
-					player.transform.position.x -= dir.v[0] * depth;
-					player.transform.position.y -= dir.v[1] * depth;
-					player.transform.position.z -= dir.v[2] * depth;
-				}
+			if (abs(distance) >= 10) {
+				continue;
 			}
+
+			player.transform.position.y -= distance;
+			return true;
 		}
 	}
-}
 
-void player_raycast_world() {
-	transform_t eye = player_get_eye();
-	fm_vec3_t eye_forward = { {
-		fm_cosf(eye.rotation.x) * fm_sinf(eye.rotation.y),
-		-fm_sinf(eye.rotation.x),
-		fm_cosf(eye.rotation.x) * fm_cosf(eye.rotation.y),
-	} };
-
-	ray_intersect_t ray_intersect;
-	ray_t ray = {
-		.origin = vector3_to_fgeom(eye.position),
-		.dir = eye_forward,
-	};
-
-	float closest = PLAYER_REACH;
-	target_actor = NULL;
-	for (int i = 0; i < current_scene->_actor_count; i++) {
-		for (int j = 0; j < current_scene->_actors[i]->collision_count; j++) {
-			collision_t* col = &current_scene->_actors[i]->collisions[j];
-			if ((col->flags & COLLISION_FLAG_INTERACT) == COLLISION_FLAG_INTERACT) {
-				if (col->type == COLLISION_SHAPE_CYLINDER) {
-					cylinder_t* cylinder = col->shape;
-					raycast_cylinder(&ray_intersect, &ray, cylinder);
-					if (ray_intersect.dist < closest) {
-						closest = ray_intersect.dist;
-						target_actor = current_scene->_actors[i];
-					}
-				}
-			}
-		}
-	}
+	return false;
 }
 
 char* command_speed() {
@@ -170,6 +124,13 @@ void player_init() {
 	};
 }
 
+void player_reset() {
+	player.transform.position = current_scene->spawn_position;
+	player.camera_transform.rotation.y = current_scene->spawn_yaw;
+	current_pitch_mode = PLAYER_DEFAULT_PITCH;
+	player.camera_transform.rotation.x = pitch_modes[current_pitch_mode];
+}
+
 void player_look(float delta_time) {
 	if (game_input_state == GAME_INPUT_NORMAL && JOYPAD_IS_READY) {
 		joypad_inputs_t inputs = joypad_get_inputs(JOYPAD);
@@ -197,24 +158,27 @@ void player_look(float delta_time) {
 }
 
 void player_move(float delta_time) {
+	vector3_t next = player.transform.position;
+
 	if (game_input_state == GAME_INPUT_NORMAL && JOYPAD_IS_READY) {
 		joypad_inputs_t inputs = joypad_get_inputs(JOYPAD);
 
 		if (fabsf(inputs.stick_y) > DEADZONE_Y) {
 			// move
-			player.transform.position.x += inputs.stick_y * fm_sinf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
-			player.transform.position.z += inputs.stick_y * fm_cosf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
+			next.x += inputs.stick_y * fm_sinf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
+			next.z += inputs.stick_y * fm_cosf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
 		}
 
 		// strafe
-		player.transform.position.x += inputs.cstick_x * -fm_cosf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
-		player.transform.position.z += inputs.cstick_x * fm_sinf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
+		next.x += inputs.cstick_x * -fm_cosf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
+		next.z += inputs.cstick_x * fm_sinf(player.camera_transform.rotation.y) * player_move_speed * delta_time;
 	}
 
-	player.transform.position.y -= 200 * delta_time; // todo: ground check and velocity
-
-	player_collide_world();
-	player_raycast_world();
+	// so sketchy. needs actual checks and corrections
+	bool allowed_to_move_x = player_collide_world((vector3_t) { next.x, player.transform.position.y, player.transform.position.z });
+	bool allowed_to_move_z = player_collide_world((vector3_t) { player.transform.position.x, player.transform.position.y, next.z });
+	if (allowed_to_move_x) player.transform.position.x = next.x;
+	if (allowed_to_move_z) player.transform.position.z = next.z;
 
 	if (
 		fabsf(player.transform.position.x) > 15000.0f ||

@@ -1,7 +1,6 @@
 #ifndef ACTOR_H_
 #define ACTOR_H_
 
-#include "../collision/collision.h"
 #include "../math/transform.h"
 
 #include <rspq.h>
@@ -18,9 +17,6 @@ typedef struct actor_s {
 
 	char label[32];
 	void (*interact)(actor_t* this);
-
-	collision_t* collisions;
-	int collision_count;
 
 	bool clear_depth;
 	bool disable_depth;

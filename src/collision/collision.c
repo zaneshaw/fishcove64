@@ -1,36 +1,26 @@
 #include "collision.h"
 
-#include "shapes/box.h"
-#include "shapes/cylinder.h"
-#include <ccd/quat.h>
-#include <ccd/vec3.h>
-#include <string.h>
+#include "debug.h"
 
-ccd_t ccd;
-
-void collision_init() {
-	CCD_INIT(&ccd);
-
-	ccd.max_iterations = 100;
-	ccd.mpr_tolerance = 0.1;
+float triangle_sign2(vec2_t p1, vec2_t p2, vec2_t p3) {
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
 }
 
-collision_t* collision_allocate(int count, collision_t* collisions) {
-	collision_t* _collisions = malloc(sizeof(collision_t) * count);
-	memcpy(_collisions, collisions, sizeof(collision_t) * count);
+// https://stackoverflow.com/a/2049593/10851455
+bool overlap_point2d_triangle2d(vec2_t point, fm_vec3_t v1, fm_vec3_t v2, fm_vec3_t v3) {
+	float d1, d2, d3;
+	bool has_neg, has_pos;
 
-	for (int i = 0; i < count; i++) {
-		size_t size = 0;
+	d1 = triangle_sign2(point, (vec2_t) { v1.x, v1.z }, (vec2_t) { v2.x, v2.z });
+	d2 = triangle_sign2(point, (vec2_t) { v2.x, v2.z }, (vec2_t) { v3.x, v3.z });
+	d3 = triangle_sign2(point, (vec2_t) { v3.x, v3.z }, (vec2_t) { v1.x, v1.z });
 
-		if (collisions[i].type == COLLISION_SHAPE_BOX) {
-			size = sizeof(box_t);
-		} else if (collisions[i].type == COLLISION_SHAPE_CYLINDER) {
-			size = sizeof(cylinder_t);
-		}
+	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
-		_collisions[i].shape = malloc(size);
-		memcpy(_collisions[i].shape, collisions[i].shape, size);
-	}
+	return !(has_neg && has_pos);
+}
 
-	return _collisions;
+float intersect_ray3d_plane3d(ray_t ray, plane_t plane) {
+	return -(fm_vec3_dot(&ray.origin, &plane.normal) - plane.offset) / fm_vec3_dot(&ray.direction, &plane.normal);
 }

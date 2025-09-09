@@ -2,13 +2,10 @@
 #define PLAYER_H_
 
 #include "../math/transform.h"
-#include "../collision/shapes/capsule.h"
 
 typedef struct player_s {
 	transform_t transform;
 	transform_t camera_transform;
-
-	capsule_t capsule;
 
 	float height;
 	float radius;
@@ -20,6 +17,7 @@ typedef struct player_s {
 extern player_t player;
 
 void player_init();
+void player_reset();
 void player_look(float delta_time);
 void player_move(float delta_time);
 void player_interact();

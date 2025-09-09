@@ -2,8 +2,33 @@
 #define SCENE_H_
 
 #include "../actor/actor.h"
-#include "../collision/shapes/box.h"
-#include "../collision/shapes/cylinder.h"
+
+typedef struct collision_vertex_s {
+	fm_vec3_t pos;
+} collision_vertex_t;
+
+typedef struct collision_tri_s {
+	uint16_t v1;
+	uint16_t v2;
+	uint16_t v3;
+	uint16_t normal;
+} collision_tri_t;
+
+typedef struct collision_mesh_s {
+	fm_vec3_t* vertices;
+	uint16_t vertex_count;
+
+	fm_vec3_t* normals;
+	uint16_t normal_count;
+
+	collision_tri_t* tris;
+	uint16_t tri_count;
+} collision_mesh_t;
+
+typedef struct collision_s {
+	char* path;
+	collision_mesh_t mesh;
+} collision_t;
 
 typedef struct scene_s scene_t;
 typedef struct scene_s {
@@ -23,24 +48,19 @@ typedef struct scene_s {
 	int fog_near;
 	int fog_far;
 
+	collision_t collision;
+
+	vector3_t spawn_position;
+	float spawn_yaw;
+
 	actor_t** _actors;
 	int _actor_count;
 	int _actor_capacity;
-
-	// const char* collision_path;
-
-	// collision_t collisions[128];
-	// int collisions_count;
-
-	// box_t** collision_boxes;
-	// int collision_boxes_count;
-
-	// cylinder_t** collision_cylinders;
-	// int collision_cylinders_count;
 } scene_t;
 
 extern scene_t scene_playground;
 extern scene_t scene_area1;
+extern scene_t scene_collision_test;
 
 void scene_add_actor(scene_t* scene, actor_t* actor);
 
