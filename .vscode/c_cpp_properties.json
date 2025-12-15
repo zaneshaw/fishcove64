@@ -1,0 +1,27 @@
+{
+	"env": {
+		"N64_INST": "/opt/libdragon"
+	},
+	"configurations": [
+		{
+			"name": "Linux",
+			"defines": [
+				"N64=1"
+			],
+			"includePath": [
+				"${workspaceFolder}/src",
+				"${N64_INST}/include"
+			],
+			"compilerPath": "${N64_INST}/bin/mips64-elf-gcc",
+			"compilerArgs": [
+				"-march=vr4300",
+				"-mtune=vr4300",
+				"-Wall",
+				"-Werror"
+			],
+			"cStandard": "gnu17",
+			"intelliSenseMode": "linux-gcc-x64"
+		}
+	],
+	"version": 4
+}

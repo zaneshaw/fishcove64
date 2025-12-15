@@ -1,0 +1,15 @@
+{
+	"configurations": [
+		{
+			"name": "GDB",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/fishcove64.elf",
+			"cwd": "${workspaceFolder}",
+			"MIMode": "gdb",
+			"miDebuggerPath": "gdb-multiarch",
+			"miDebuggerServerAddress": "192.168.0.104:9123",
+			"miDebuggerArgs": "-readnow",
+		}
+	]
+}

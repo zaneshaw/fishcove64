@@ -1,0 +1,8 @@
+{
+	"Header file snippet": {
+		"scope": "c,cpp",
+		"prefix": "h",
+		"body": ["#ifndef ${1:NAME}_H_", "#define ${1:NAME}_H_", "", "$0", "", "#endif // ${1:NAME}_H_"],
+		"description": "Header file snippet"
+	}
+}

@@ -25,7 +25,6 @@ SPRITE_LIST = $(shell find assets/sprites/ -type f -name '*.png')
 TEXTURE_LIST = $(shell find assets/textures/ -type f -name '*.png')
 MODEL_LIST = $(shell find assets/models/ -type f -name '*.glb')
 SOUND_LIST = $(shell find assets/sound/ -type f -name '*.wav')
-SOUND_LIST = $(shell find assets/sound/ -type f -name '*.wav')
 
 ASSETS_LIST += $(subst assets,filesystem,$(FILE_LIST))
 ASSETS_LIST += $(subst assets,filesystem,$(FONT_LIST:%.ttf=%.font64))
