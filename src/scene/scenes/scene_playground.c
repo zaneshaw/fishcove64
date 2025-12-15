@@ -31,12 +31,12 @@ static actor_t* world;
 static actor_t* coolest_totem;
 static actor_t* pond;
 
-static void pond_interact() {
-	fish_instance_t fish_instance;
-	fishing_roll(&fish_instance);
-	fishing_debug(false);
-	inventory_add(&fish_instance);
-}
+// static void pond_interact() {
+// 	fish_instance_t fish_instance;
+// 	fishing_roll(&fish_instance);
+// 	fishing_debug(false);
+// 	inventory_add(&fish_instance);
+// }
 
 static void load(scene_t* this) {
 	world = malloc(sizeof(actor_t));
@@ -74,7 +74,7 @@ static void load(scene_t* this) {
 		.model = t3d_model_load("rom:/models/scenes/playground/pond.t3dm"),
 
 		.label = "i am the water pond",
-		.interact = &pond_interact,
+		// .interact = &pond_interact,
 	};
 
 	scene_add_actor(&scene_playground, world);

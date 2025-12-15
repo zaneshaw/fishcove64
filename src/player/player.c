@@ -145,7 +145,7 @@ void player_look(float delta_time) {
 		// pitch
 		if (pressed.c_up && current_pitch_mode > 0)
 			current_pitch_mode--;
-		else if (pressed.c_down && current_pitch_mode < (sizeof(pitch_modes) / sizeof(int)) - 1)
+		else if (pressed.c_down && current_pitch_mode < ARR_LEN(pitch_modes, int) - 1)
 			current_pitch_mode++;
 
 		player.camera_transform.rotation.x = lerp(

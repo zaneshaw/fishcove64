@@ -29,5 +29,6 @@
 #define JOYPAD_IS_READY joypad_is_connected(JOYPAD) && joypad_get_identifier(JOYPAD) == JOYBUS_IDENTIFIER_N64_CONTROLLER
 
 #define STR_EQ(a, b) (strcmp(a, b) == 0)
+#define ARR_LEN(arr, type) (sizeof(arr) / sizeof(type))
 
 #endif // DEFINES_H_

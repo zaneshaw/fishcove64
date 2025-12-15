@@ -14,7 +14,7 @@ void inventory_add(fish_instance_t* fish_instance) {
 		if (!slots[i].not_empty) {
 			slots[i].not_empty = true;
 			slots[i].fish_instance = *fish_instance;
-			break;
+			return;
 		}
 	}
 }

@@ -1,7 +1,9 @@
 #include "actor/actor.h"
 #include "debug/debug_menu.h"
 #include "font/font.h"
+#include "game/fish.h"
 #include "game/game.h"
+#include "game/water.h"
 #include "lib/debug.h"
 #include "lib/pcg/pcg_basic.h"
 #include "math/vector3.h"
@@ -23,6 +25,26 @@ float elapsed = 0.0f;
 time_t now;
 save_data_t last_data;
 
+water_t water_test = {
+	.lt_day = (fish_lt_t) {
+		(fish_lt_entry_t[]) {
+			{ "a_fish", 5 },
+			{ "b_fish", 5 },
+			{ "rare_fish", 1 },
+		},
+		3
+	},
+	.lt_day = (fish_lt_t) {
+		(fish_lt_entry_t[]) {
+			{ "a_fish", 5 },
+			{ "b_fish", 5 },
+			{ "rare_fish", 1 },
+		},
+		3
+	},
+	.frenzy = 0,
+};
+
 void setup() {
 	debug_init_isviewer();
 	debug_init_usblog();
@@ -33,10 +55,10 @@ void setup() {
 
 	font_init();
 	debug_menu_init();
-	fishing_init();
+	fish_init();
 	player_init();
 
-	scene_load(&scene_collision_test);
+	scene_load(&scene_area1);
 
 	debug_printcommands();
 }
@@ -81,6 +103,9 @@ int main() {
 			if (game_input_state == GAME_INPUT_NORMAL) {
 				if (pressed.d_right) {
 					inventory_toggle();
+				}
+				if (pressed.a) {
+					water_catch(&water_test);
 				}
 			} else if (game_input_state == GAME_INPUT_PAUSE) {
 				if (pressed.a) {
