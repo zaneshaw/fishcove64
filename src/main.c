@@ -157,7 +157,7 @@ int main() {
 		t3d_frame_start();
 		t3d_viewport_attach(&viewport);
 
-		rdpq_set_prim_color(RGBA16(0xFF, 0xFF, 0xFF, 0xFF));
+		rdpq_set_prim_color(RGBA16(0, 0, 0, 0));
 
 		t3d_screen_clear_depth();
 

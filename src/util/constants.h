@@ -26,7 +26,7 @@
 #define PLAYER_REACH 150.0f
 
 #define JOYPAD JOYPAD_PORT_1
-#define JOYPAD_IS_READY joypad_is_connected(JOYPAD) && joypad_get_identifier(JOYPAD) == JOYBUS_IDENTIFIER_N64_CONTROLLER
+#define JOYPAD_IS_READY joypad_is_connected(JOYPAD)
 
 #define STR_EQ(a, b) (strcmp(a, b) == 0)
 #define ARR_LEN(arr, type) (sizeof(arr) / sizeof(type))
