@@ -2,7 +2,7 @@
 
 #include <t3d/t3dmodel.h>
 
-static void load(scene_t* this);
+static void load(scene_t* self);
 
 scene_t scene_collision_test = (scene_t) {
 	.name = "Collision Testing Zone",
@@ -27,15 +27,15 @@ scene_t scene_collision_test = (scene_t) {
 
 static actor_t* world;
 
-static void load(scene_t* this) {
-	world = malloc(sizeof(actor_t));
+static void load(scene_t* self) {
+	world = (actor_t*) malloc(sizeof(actor_t));
 	*world = (actor_t) {
 		.transform = {
 			.position = { 0, 0, 0 },
 			.rotation = { 0, 0, 0 },
 			.scale = { 1, 1, 1 },
 		},
-		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
+		.transform_matrix = (T3DMat4FP*) malloc_uncached(sizeof(T3DMat4FP)),
 		.model = t3d_model_load("rom:/models/scenes/collision_test/world.t3dm"),
 	};
 

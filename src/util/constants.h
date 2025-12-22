@@ -29,6 +29,6 @@
 #define JOYPAD_IS_READY joypad_is_connected(JOYPAD)
 
 #define STR_EQ(a, b) (strcmp(a, b) == 0)
-#define ARR_LEN(arr, type) (sizeof(arr) / sizeof(type))
+#define ARR_LEN(arr, type) (int) (sizeof(arr) / sizeof(type))
 
 #endif // DEFINES_H_

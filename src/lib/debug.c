@@ -686,7 +686,7 @@ https://github.com/buu342/N64-UNFLoader
         if (slot != NULL)
         {
             while (slot->next != NULL)
-                slot = slot->next;
+                slot = (debugCommand *) slot->next;
             slot->next = &debug_commands_elements[debug_commands_count];
         }
         else
@@ -1056,7 +1056,7 @@ https://github.com/buu342/N64-UNFLoader
                         usb_purge();
                         break;
                     }
-                    entry = entry->next;
+                    entry = (debugCommand *) entry->next;
                 }
 
                 // If no command was found

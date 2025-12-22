@@ -4,8 +4,8 @@
 
 #include <t3d/t3dmodel.h>
 
-static void load(scene_t* this);
-static void update(scene_t* this, float delta_time, float elapsed);
+static void load(scene_t* self);
+static void update(scene_t* self, float delta_time, float elapsed);
 
 scene_t scene_playground = (scene_t) {
 	.name = "Playground",
@@ -38,39 +38,39 @@ static actor_t* pond;
 // 	inventory_add(&fish_instance);
 // }
 
-static void load(scene_t* this) {
-	world = malloc(sizeof(actor_t));
+static void load(scene_t* self) {
+	world = (actor_t*) malloc(sizeof(actor_t));
 	*world = (actor_t) {
 		.transform = {
 			.position = { 0, 0, 0 },
 			.rotation = { 0, 0, 0 },
 			.scale = { 1, 1, 1 },
 		},
-		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
+		.transform_matrix = (T3DMat4FP*) malloc_uncached(sizeof(T3DMat4FP)),
 		.model = t3d_model_load("rom:/models/scenes/playground/world.t3dm"),
 
 		.label = "i am the world",
 	};
 
-	coolest_totem = malloc(sizeof(actor_t));
+	coolest_totem = (actor_t*) malloc(sizeof(actor_t));
 	*coolest_totem = (actor_t) {
 		.transform = {
 			.position = { 0, 180, 0 },
 			.rotation = { 0, 0, 0 },
 			.scale = { 1, 1, 1 },
 		},
-		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
+		.transform_matrix = (T3DMat4FP*) malloc_uncached(sizeof(T3DMat4FP)),
 		.model = t3d_model_load("rom:/models/scenes/playground/coolest_totem.t3dm"),
 	};
 
-	pond = malloc(sizeof(actor_t));
+	pond = (actor_t*) malloc(sizeof(actor_t));
 	*pond = (actor_t) {
 		.transform = {
 			.position = { 0, 0, 300 },
 			.rotation = { 0, 0, 0 },
 			.scale = { 1, 1, 1 },
 		},
-		.transform_matrix = malloc_uncached(sizeof(T3DMat4FP)),
+		.transform_matrix = (T3DMat4FP*) malloc_uncached(sizeof(T3DMat4FP)),
 		.model = t3d_model_load("rom:/models/scenes/playground/pond.t3dm"),
 
 		.label = "i am the water pond",
@@ -82,6 +82,6 @@ static void load(scene_t* this) {
 	scene_add_actor(&scene_playground, pond);
 }
 
-static void update(scene_t* this, float delta_time, float elapsed) {
+static void update(scene_t* self, float delta_time, float elapsed) {
 	coolest_totem->transform.position.y = fm_sinf(elapsed * M_TWOPI * 0.3f) * 100.0f + 180.0f;
 }

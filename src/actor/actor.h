@@ -16,7 +16,7 @@ typedef struct actor_s {
 	rspq_block_t* block;
 
 	char label[32];
-	void (*interact)(actor_t* this);
+	void (*interact)(actor_t* self);
 
 	bool clear_depth;
 	bool disable_depth;

@@ -8,7 +8,7 @@ scene_t* current_scene = NULL;
 void load_collision(scene_t* scene) {
 	int file_handle = dfs_open(scene->collision.path);
 	int size = dfs_size(file_handle);
-	char* buffer = malloc(size);
+	char* buffer = (char*) malloc(size);
 	dfs_read(buffer, 1, size, file_handle);
 	dfs_close(file_handle);
 
@@ -26,9 +26,9 @@ void load_collision(scene_t* scene) {
 	}
 	free(buffer_dup);
 
-	scene->collision.mesh.vertices = malloc(scene->collision.mesh.vertex_count * sizeof(fm_vec3_t));
-	scene->collision.mesh.normals = malloc(scene->collision.mesh.normal_count * sizeof(fm_vec3_t));
-	scene->collision.mesh.tris = malloc(scene->collision.mesh.tri_count * sizeof(collision_tri_t));
+	scene->collision.mesh.vertices = (fm_vec3_t*) malloc(scene->collision.mesh.vertex_count * sizeof(fm_vec3_t));
+	scene->collision.mesh.normals = (fm_vec3_t*) malloc(scene->collision.mesh.normal_count * sizeof(fm_vec3_t));
+	scene->collision.mesh.tris = (collision_tri_t*) malloc(scene->collision.mesh.tri_count * sizeof(collision_tri_t));
 
 	int vertex_i = 0;
 	int normal_i = 0;

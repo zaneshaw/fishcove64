@@ -8,11 +8,11 @@ void scene_add_actor(scene_t* scene, actor_t* actor) {
 		if (scene->_actor_capacity == 0) {
 			scene->_actor_capacity = 4;
 
-			scene->_actors = malloc(sizeof(actor_t*) * 4);
+			scene->_actors = (actor_t**) malloc(sizeof(actor_t*) * 4);
 		} else {
 			scene->_actor_capacity *= 2;
 
-			actor_t** bigger_actors = malloc(sizeof(actor_t*) * scene->_actor_capacity);
+			actor_t** bigger_actors = (actor_t**) malloc(sizeof(actor_t*) * scene->_actor_capacity);
 
 			for (int i = 0; i < scene->_actor_count; i++) {
 				bigger_actors[i] = scene->_actors[i];

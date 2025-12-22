@@ -31,4 +31,3 @@ PointerAlignment: Left
 AllowShortEnumsOnASingleLine: false
 SpaceAfterCStyleCast: true
 SpaceBeforeCpp11BracedList: true
-AlignTrailingComments: true

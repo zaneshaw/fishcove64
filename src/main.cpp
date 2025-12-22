@@ -4,8 +4,6 @@
 #include "game/fish.h"
 #include "game/game.h"
 #include "game/water.h"
-#include "lib/debug.h"
-#include "lib/pcg/pcg_basic.h"
 #include "math/vector3.h"
 #include "player/inventory.h"
 #include "player/player.h"
@@ -20,6 +18,11 @@
 #include <t3d/t3dmodel.h>
 #include <time.h>
 
+extern "C" {
+	#include "lib/debug.h"
+	#include "lib/pcg/pcg_basic.h"
+}
+
 float delta_time;
 float elapsed = 0.0f;
 time_t now;
@@ -32,15 +35,15 @@ water_t water_test = {
 			{ "b_fish", 5 },
 			{ "rare_fish", 1 },
 		},
-		3
+		3,
 	},
-	.lt_day = (fish_lt_t) {
+	.lt_night = (fish_lt_t) {
 		(fish_lt_entry_t[]) {
 			{ "a_fish", 5 },
 			{ "b_fish", 5 },
 			{ "rare_fish", 1 },
 		},
-		3
+		3,
 	},
 	.frenzy = 0,
 };
@@ -64,7 +67,8 @@ void setup() {
 }
 
 int main() {
-	display_init((resolution_t) { .width = 320L, .height = 288L }, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
+	// display_init((resolution_t) { .width = 320L, .height = 288L }, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
+	display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE);
 	rdpq_init();
 	t3d_init((T3DInitParams) {});
 	gl_init();
@@ -124,7 +128,7 @@ int main() {
 			}
 
 			if (pressed.start) {
-				game_input_state = (game_input_state + 1) % 2;
+				game_input_state = (game_input_state_t) ((game_input_state + 1) % 2);
 			}
 		}
 
@@ -144,10 +148,10 @@ int main() {
 
 		t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(FOV), NEAR_PLANE, FAR_PLANE);
 		t3d_viewport_look_at(
-			&viewport,
-			&vector3_to_fgeom(eye.position),
-			&vector3_to_fgeom(eye_target),
-			&vector3_to_fgeom(vector3_up)
+			viewport,
+			vector3_to_fgeom(eye.position) ,
+			vector3_to_fgeom(eye_target),
+			vector3_to_fgeom(vector3_up)
 		);
 
 		scene_update(delta_time, elapsed);

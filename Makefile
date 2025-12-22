@@ -17,7 +17,7 @@ LDFLAGS += -g -L$(N64_INST)/lib -l:libccd.a
 N64_CFLAGS += -g -O0
 N64_LDFLAGS += -g
 
-SOURCES = $(shell find $(SOURCE_DIR) -type f -name '*.c')
+SOURCES = $(shell find $(SOURCE_DIR) -type f -regex '.*\.\(cpp\|c\)')
 
 FILE_LIST = $(shell find assets/files/ -type f -name '*.*')
 FONT_LIST = $(shell find assets/fonts/ -type f -name '*.ttf')
@@ -71,13 +71,13 @@ filesystem/models/%.t3dm: assets/models/%.glb
 all: $(PROJECT_NAME).z64
 
 $(BUILD_DIR)/$(PROJECT_NAME).dfs: $(ASSETS_LIST)
-$(BUILD_DIR)/$(PROJECT_NAME).elf: $(SOURCES:$(SOURCE_DIR)/%.c=$(BUILD_DIR)/%.o)
+$(BUILD_DIR)/$(PROJECT_NAME).elf: $(patsubst $(SOURCE_DIR)/%,$(BUILD_DIR)/%.o,$(basename $(SOURCES)))
 
 $(PROJECT_NAME).z64: $(BUILD_DIR)/$(PROJECT_NAME).dfs
 $(PROJECT_NAME).z64: N64_ROM_TITLE=$(PRETTY_NAME)
 $(PROJECT_NAME).z64: N64_ROM_SAVETYPE=sram256k
 $(PROJECT_NAME).z64: N64_ROM_RTC=1
-$(PROJECT_NAME).z64: N64_ROM_REGION=U # aus
+# $(PROJECT_NAME).z64: N64_ROM_REGION=U # aus
 
 clean:
 	rm -rf $(BUILD_DIR) *.z64

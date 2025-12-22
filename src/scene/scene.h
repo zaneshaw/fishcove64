@@ -26,17 +26,13 @@ typedef struct collision_mesh_s {
 } collision_mesh_t;
 
 typedef struct collision_s {
-	char* path;
+	const char* path;
 	collision_mesh_t mesh;
 } collision_t;
 
 typedef struct scene_s scene_t;
 typedef struct scene_s {
 	const char* name;
-
-	void (*load)(scene_t* this);
-	void (*update)(scene_t* this, float delta_time, float elapsed);
-	void (*render)(scene_t* this);
 
 	color_t clear_color;
 	const uint8_t* ambient_color;
@@ -45,8 +41,8 @@ typedef struct scene_s {
 
 	bool fog_enabled;
 	color_t fog_color;
-	int fog_near;
-	int fog_far;
+	float fog_near;
+	float fog_far;
 
 	collision_t collision;
 
@@ -56,6 +52,10 @@ typedef struct scene_s {
 	actor_t** _actors;
 	int _actor_count;
 	int _actor_capacity;
+
+	void (*load)(scene_t* self);
+	void (*update)(scene_t* self, float delta_time, float elapsed);
+	void (*render)(scene_t* self);
 } scene_t;
 
 extern scene_t scene_playground;

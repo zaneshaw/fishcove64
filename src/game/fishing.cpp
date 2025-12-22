@@ -1,16 +1,19 @@
 #include "fishing.h"
 
 #include "../util/constants.h"
-#include "../lib/pcg/pcg_basic.h"
 
 #include <debug.h>
+
+extern "C" {
+	#include "../lib/pcg/pcg_basic.h"
+}
 
 pcg32_random_t* rng = 0x00;
 
 // probably bad idk
 void fishing_roll(fish_instance_t* fish_instance, fish_lt_t* lt) {
 	if (!rng) {
-		rng = malloc(sizeof(pcg32_random_t));
+		rng = (pcg32_random_t*) malloc(sizeof(pcg32_random_t));
 		pcg32_srandom_r(rng, 0, getentropy32());
 	}
 
@@ -25,7 +28,7 @@ void fishing_roll(fish_instance_t* fish_instance, fish_lt_t* lt) {
 	int weight_sum = 0;
 	for (int i = 0; i < lt->count; i++) {
 		weight_sum += lt->entries[i].rng_weight;
-		if (rand < weight_sum) {
+		if (rand < (uint32_t) weight_sum) {
 			fish_index = i;
 			break;
 		}

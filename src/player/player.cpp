@@ -4,7 +4,6 @@
 #include "../font/font.h"
 #include "../game/fishing.h"
 #include "../game/game.h"
-#include "../lib/debug.h"
 #include "../math/lerp.h"
 #include "../scene/scene_loader.h"
 #include "../util/constants.h"
@@ -12,6 +11,10 @@
 
 #include <debug.h>
 #include <t3d/t3dmath.h>
+
+extern "C" {
+	#include "../lib/debug.h"
+}
 
 #define PLAYER_LOOK_SPEED 0.035f
 #define PITCH_LERP_SPEED 10.0f
@@ -91,7 +94,7 @@ bool player_collide_world(vector3_t pos) {
 	return false;
 }
 
-char* command_speed() {
+const char* command_speed() {
 	debugf("aaaa\n"); // doesn't work on usb/hardware
 	int size = debug_sizecommand();
 	char speed[4];
@@ -114,7 +117,7 @@ char* command_speed() {
 }
 
 void player_init() {
-	debug_addcommand("speed", "sets the player's speed\n\texample usage: speed 5", command_speed);
+	debug_addcommand((char*) "speed", (char*) "sets the player's speed\n\texample usage: speed 5", (char* (*) ()) command_speed);
 
 	interaction_label_params = (rdpq_textparms_t) {
 		.width = (short) display_get_width(),
